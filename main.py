@@ -34,8 +34,7 @@ st.header("What are you looking for?")
 
 queryNL = st.empty()
 st.write("You don't know what you are looking for? Check the courses summary.")
-    
-languages = ["English", "Italian", "Japanese", "Spanish"] #from dataset
+
 be.create_selection_expander("language", be.languages())
 
 col1, col2, col3 = st.columns(3)
@@ -61,7 +60,7 @@ with col2:
     st.number_input("Minimum price", 0)
 
 with col3:
-    st.number_input("Maximum price", 1000)
+    st.number_input("Maximum price", be.maxprice())
     
 with queryNL:
     st.write("I'm looking for a course in " + be.list_to_string("language").lower() + " about " + be.list_to_string("category").lower())

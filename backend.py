@@ -113,4 +113,7 @@ def languages(): #
 def categories(): #
   return courses["category"].unique()
 
+def maxprice(): #
+  return round(courses["price"].max(),0)
+
 
