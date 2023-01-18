@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 
 
 courses = pd.read_csv("courses_edited.csv")
+comments = pd.read_csv("comments_edited.csv")
 
 def create_selection_expander(selectionType, options):
     st.session_state[selectionType] = ["Any " + selectionType]

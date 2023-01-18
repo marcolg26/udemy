@@ -33,7 +33,7 @@ st.title("Welcome on Ude:violet[Me]!")
 st.header("What are you looking for?")
 
 queryNL = st.empty()
-st.write("You don't know what you are looking for? Check the courses summary.")
+st.write("You don't know what you are looking for? Check the courses summary!")
 
 be.create_selection_expander("language", be.languages())
 
