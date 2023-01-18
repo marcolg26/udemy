@@ -7,23 +7,26 @@ from bs4 import BeautifulSoup
 courses = pd.read_csv("courses_edited.csv")
 comments = pd.read_csv("comments_edited.csv")
 
+
+
 def create_selection_expander(selectionType, options):
     st.session_state[selectionType] = ["Any " + selectionType]
-    
+    count=0
     with st.expander("Select " + selectionType):
         selected = st.empty()
         for option in options:
-            if st.checkbox(option):
+            count=count+1
+            if st.checkbox(option, key=str(option)+str(count)): #chiave univoca
                 st.session_state[selectionType].append(option)
                 if "Any " + selectionType in st.session_state[selectionType]:
                     st.session_state[selectionType].remove("Any " + selectionType)
-                
+
             elif option in st.session_state[selectionType]:
                 st.session_state[selectionType].remove(option)
-    
+
     with selected:
         st.caption("Selection: " + list_to_string(selectionType).lower())
-    
+
 
 def list_to_string(selector):
     string = ""
@@ -33,47 +36,95 @@ def list_to_string(selector):
         if n > 1:
             for element in st.session_state[selector][1:]:
                 string = string + ", " + element
-    
+
     return string
 
 
 def find_course_img_url(course_url):
     response = requests.get("https://www.udemy.com" + course_url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    
-    image_tags = soup.find_all('img', attrs = {'srcset' : True})
-    url = [img['srcset'] for img in image_tags][0].split(", ")[-1]
-    
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    image_tags = soup.find_all("img", attrs={"srcset": True})
+    url = [img["srcset"] for img in image_tags][0].split(", ")[-1]
+
     return url.split()[0]
-        
+
 
 def get_courses():
-    placeholder = pd.DataFrame(columns = ["id",
-    "title",
-    "is_paid",
-    "price",
-    "headline",
-    "num_subscribers",
-    "avg_rating",
-    "num_reviews",
-    "num_comments",
-    "num_lectures",
-    "content_length",
-    "published_time",
-    "last_update", 
-    "category", 
-    "subcategory", 
-    "topic",
-    "language",
-    "course_url",
-    "instructor_name",
-    "instructor_url"])
-    
-    placeholder.loc['0'] = [4715, "Online Vegan Vegetarian Cooking School", True, 24.99, "Learn to cook delicious vegan recipes. Filmed over 15 years ago, watch the first 2hrs FREE to see if...", 2231, 3.75, 134, 42, 37, 1268, "2010-08-05T22:06:13Z", "2020-11-06", "Lifestyle", "Food & Beverage", "Vegan Cooking", "English", "/course/vegan-vegetarian-cooking-school/", "Angela Poch", "/user/angelapoch/"]
-    
-    placeholder.loc['1'] = [3, "Online testing school", False, 21.2, "Learn to test recipes.", 231, 3.5, 14, 412, 7, 68, "2010-08-05T22:06:13Z", "2020-11-06", "Technology", "Film & Beverage", "Test Cooking", "Italian", "/course/the-lean-startup-debunking-myths-of-entrepreneurship/", "Diavola Chick", "/user/ericries/"]
+    placeholder = pd.DataFrame(
+        columns=[
+            "id",
+            "title",
+            "is_paid",
+            "price",
+            "headline",
+            "num_subscribers",
+            "avg_rating",
+            "num_reviews",
+            "num_comments",
+            "num_lectures",
+            "content_length",
+            "published_time",
+            "last_update",
+            "category",
+            "subcategory",
+            "topic",
+            "language",
+            "course_url",
+            "instructor_name",
+            "instructor_url",
+        ]
+    )
 
-    return placeholder
+    placeholder.loc["0"] = [
+        4715,
+        "Online Vegan Vegetarian Cooking School",
+        True,
+        24.99,
+        "Learn to cook delicious vegan recipes. Filmed over 15 years ago, watch the first 2hrs FREE to see if...",
+        2231,
+        3.75,
+        134,
+        42,
+        37,
+        1268,
+        "2010-08-05T22:06:13Z",
+        "2020-11-06",
+        "Lifestyle",
+        "Food & Beverage",
+        "Vegan Cooking",
+        "English",
+        "/course/vegan-vegetarian-cooking-school/",
+        "Angela Poch",
+        "/user/angelapoch/",
+    ]
+
+    placeholder.loc["1"] = [
+        3,
+        "Online testing school",
+        False,
+        21.2,
+        "Learn to test recipes.",
+        231,
+        3.5,
+        14,
+        412,
+        7,
+        68,
+        "2010-08-05T22:06:13Z",
+        "2020-11-06",
+        "Technology",
+        "Film & Beverage",
+        "Test Cooking",
+        "Italian",
+        "/course/the-lean-startup-debunking-myths-of-entrepreneurship/",
+        "Diavola Chick",
+        "/user/ericries/",
+    ]
+
+    list=courses[courses['topic'].isin(st.session_state["topic"])]
+
+    return list
 
 
 def draw_rating(rating):
@@ -97,10 +148,15 @@ def draw_rating(rating):
             svg_html = svg_html + half_star
         else:
             svg_html = svg_html + empty_star
-    
-    svg_html = svg_html + "</g><span style=\"color:gold;vertical-align:super;font-size:0.7em\">(" + str(rating) + "/5)</span>"
+
+    svg_html = (
+        svg_html
+        + '</g><span style="color:gold;vertical-align:super;font-size:0.7em">('
+        + str(rating)
+        + "/5)</span>"
+    )
     st.caption(svg_html, True)
-    return 
+    return
 
 
 def switch_page(page_name):
@@ -108,13 +164,22 @@ def switch_page(page_name):
         courses_summary.display()
 
 
-def languages(): #
-  return courses["language"].unique()
-
-def categories(): #
-  return courses["category"].unique()
-
-def maxprice(): #
-  return round(courses["price"].max(),0)
+def languages():  #
+    return courses["language"].unique()
 
 
+def categories():  #
+    return courses["category"].unique()
+
+
+def subcategories():  #
+    sub=courses[courses['category'].isin(st.session_state["category"])]
+    return sub["subcategory"].unique()
+
+def topics():  #
+    top=courses[courses['subcategory'].isin(st.session_state["subcategory"])]
+    return top["topic"].unique()
+
+
+def maxprice():  #
+    return round(courses["price"].max(), 0)

@@ -40,16 +40,13 @@ be.create_selection_expander("language", be.languages())
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    categories = ["IT & Software", "Development"] #from dataset
-    be.create_selection_expander("category", categories)
+    be.create_selection_expander("category", be.categories())
 
 with col2:
-    subcategories = ["Phyton subc", "Java subc"] #from dataset
-    be.create_selection_expander("subcategory", subcategories)
+    be.create_selection_expander("subcategory", be.subcategories())
 
 with col3:
-    topics = ["Phyton", "Java"] #from dataset
-    be.create_selection_expander("topic", topics)
+    be.create_selection_expander("topic", be.topics())
 
 col1, col2, col3 = st.columns(3)
 
@@ -66,6 +63,7 @@ with queryNL:
     st.write("I'm looking for a course in " + be.list_to_string("language").lower() + " about " + be.list_to_string("category").lower())
 
 if st.button("Search!"):
+
     courses = be.get_courses()
     
     st.header("Top results")
@@ -87,14 +85,14 @@ if st.button("Search!"):
     
                 st.caption("<span>" + str(course.num_reviews) + " reviews and " + str(course.num_comments) + " comments: " + "</span>", True)
                 
-                if course.is_paid:
+                if course.price==0:
                     st.caption("Price: **" + str(course.price) + "** $")
                 else:
                     st.caption(":green[Free course!]")          
     
-                if course.content_length >= 120:
-                    st.caption("Duration: " + str(course.content_length//60) + ":" + (str(course.content_length%60) if course.content_length%60 >= 10 else "0" + str(course.content_length%60)) + " hours (" + str(course.num_lectures) + " lectures)")
+                if course.content_length_min >= 120:
+                    st.caption("Duration: " + str(course.content_length_min//60) + ":" + (str(course.content_length_min%60) if course.content_length_min%60 >= 10 else "0" + str(course.content_length_min%60)) + " hours (" + str(course.num_lectures) + " lectures)")
                 else:
-                    st.caption("Duration: " + str(course.content_length) + " minutes (" + str(course.num_lectures) + " lectures)")
+                    st.caption("Duration: " + str(course.content_length_min) + " minutes (" + str(course.num_lectures) + " lectures)")
                     
                 st.write(course.headline)
