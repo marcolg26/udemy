@@ -73,16 +73,15 @@ if st.button("Search!"):
             with col1:
                 st.image(be.find_course_img_url(course.course_url))
             with col2:
-                
                 st.subheader(course.title)
 
                 instructor_name = "<a href=\"/author\" target=\"self\">" + course.instructor_name + "</a>"
                 st.caption("Course by " + instructor_name, True)
     
-                st.caption(str(course.num_subscribers) + " people subscribed to this course")
+                st.caption(str(round(course.num_subscribers)) + " people subscribed to this course")
                 be.draw_rating(course.avg_rating)
     
-                st.caption("<span>" + str(course.num_reviews) + " reviews and " + str(course.num_comments) + " comments: " + "</span>", True)
+                st.caption("<span>" + str(round(course.num_reviews)) + " reviews and " + str(round(course.num_comments)) + " comments: " + "</span>", True)
                 
                 if course.price!=0:
                     st.caption("Price: **" + str(course.price) + "** $")
@@ -90,8 +89,8 @@ if st.button("Search!"):
                     st.caption(":green[Free course!]")          
     
                 if course.content_length_min >= 120:
-                    st.caption("Duration: " + str(course.content_length_min//60) + ":" + (str(course.content_length_min%60) if course.content_length_min%60 >= 10 else "0" + str(course.content_length_min%60)) + " hours (" + str(course.num_lectures) + " lectures)")
+                    st.caption("Duration: " + str(round(course.content_length_min//60)) + ":" + (str(round(course.content_length_min%60)) if course.content_length_min%60 >= 10 else "0" + str(round(course.content_length_min%60))) + " hours (" + str(round(course.num_lectures)) + " lectures)")
                 else:
-                    st.caption("Duration: " + str(course.content_length_min) + " minutes (" + str(course.num_lectures) + " lectures)")
+                    st.caption("Duration: " + str(round(course.content_length_min)) + " minutes (" + str(round(course.num_lectures)) + " lectures)")
                     
                 st.write(course.headline)
