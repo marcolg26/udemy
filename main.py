@@ -71,7 +71,6 @@ with col2:
 if "order" in st.session_state and st.session_state.order != "Subscriptions":
     with order_period:
         st.selectbox(st.session_state.order + " during", ["Today", "Last week", "Last month", "Last three months", "Last year", "Anytime"], index=5)
-    st.session_state["max"]=st.number_input("Maximum price", min_value=1, value=int(be.maxprice()), disabled=st.session_state["free"])
     
 with queryNL:
     st.write("I'm looking for a course in " + be.list_to_string("language").lower() + " about " + be.list_to_string("category").lower())
