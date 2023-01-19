@@ -8,7 +8,6 @@ courses = pd.read_csv("courses_edited.csv")
 comments = pd.read_csv("comments_edited.csv")
 
 
-
 def create_selection_expander(selectionType, options):
     st.session_state[selectionType] = ["Any " + selectionType]
     count=0
@@ -51,78 +50,7 @@ def find_course_img_url(course_url):
 
 
 def get_courses():
-    placeholder = pd.DataFrame(
-        columns=[
-            "id",
-            "title",
-            "is_paid",
-            "price",
-            "headline",
-            "num_subscribers",
-            "avg_rating",
-            "num_reviews",
-            "num_comments",
-            "num_lectures",
-            "content_length",
-            "published_time",
-            "last_update",
-            "category",
-            "subcategory",
-            "topic",
-            "language",
-            "course_url",
-            "instructor_name",
-            "instructor_url",
-        ]
-    )
-
-    placeholder.loc["0"] = [
-        4715,
-        "Online Vegan Vegetarian Cooking School",
-        True,
-        24.99,
-        "Learn to cook delicious vegan recipes. Filmed over 15 years ago, watch the first 2hrs FREE to see if...",
-        2231,
-        3.75,
-        134,
-        42,
-        37,
-        1268,
-        "2010-08-05T22:06:13Z",
-        "2020-11-06",
-        "Lifestyle",
-        "Food & Beverage",
-        "Vegan Cooking",
-        "English",
-        "/course/vegan-vegetarian-cooking-school/",
-        "Angela Poch",
-        "/user/angelapoch/",
-    ]
-
-    placeholder.loc["1"] = [
-        3,
-        "Online testing school",
-        False,
-        21.2,
-        "Learn to test recipes.",
-        231,
-        3.5,
-        14,
-        412,
-        7,
-        68,
-        "2010-08-05T22:06:13Z",
-        "2020-11-06",
-        "Technology",
-        "Film & Beverage",
-        "Test Cooking",
-        "Italian",
-        "/course/the-lean-startup-debunking-myths-of-entrepreneurship/",
-        "Diavola Chick",
-        "/user/ericries/",
-    ]
-
-    list=courses[courses['topic'].isin(st.session_state["topic"])]
+    list = courses[courses['topic'].isin(st.session_state["topic"])]
 
     return list
 
@@ -157,11 +85,6 @@ def draw_rating(rating):
     )
     st.caption(svg_html, True)
     return
-
-
-def switch_page(page_name):
-    if page_name == "courses_summary":
-        courses_summary.display()
 
 
 def languages():  #
