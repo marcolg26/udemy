@@ -2,8 +2,6 @@ import streamlit as st
 import pandas as pd
 import backend as be 
 
-#prova
-
 st.set_page_config(layout="wide")
 
 st.markdown("""
@@ -50,13 +48,13 @@ with col3:
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    free=st.checkbox("Only free courses")
-
+    st.session_state["free"]=st.checkbox("Only free courses")
+    
 with col2:
-    st.session_state["min"]=st.number_input("Minimum price", 0)
+    st.session_state["min"]=st.number_input("Minimum price", 0, disabled=st.session_state["free"])
 
 with col3:
-    st.session_state["max"]=st.number_input("Maximum price", min_value=1, value=int(be.maxprice()))
+    st.session_state["max"]=st.number_input("Maximum price", min_value=1, value=int(be.maxprice()), disabled=st.session_state["free"])
     
 with queryNL:
     st.write("I'm looking for a course in " + be.list_to_string("language").lower() + " about " + be.list_to_string("category").lower())
@@ -84,7 +82,7 @@ if st.button("Search!"):
                 st.caption("<span>" + str(round(course.num_reviews)) + " reviews and " + str(round(course.num_comments)) + " comments: " + "</span>", True)
                 
                 if course.price!=0:
-                    st.caption("Price: **" + str(course.price) + "** $")
+                    st.caption("Price: **" + str(course.price) + "**$")
                 else:
                     st.caption(":green[Free course!]")          
     
