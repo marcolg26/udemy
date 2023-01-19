@@ -53,9 +53,12 @@ def find_course_img_url(course_url):
     soup = BeautifulSoup(response.text, "html.parser")
 
     image_tags = soup.find_all("img", attrs={"srcset": True})
-    url = [img["srcset"] for img in image_tags][0].split(", ")[-1]
+    if len(image_tags) > 0:
+        url = [img["srcset"] for img in image_tags][0].split(", ")[-1]
 
-    return url.split()[0]
+        return url.split()[0]
+    else:
+        return "https://s.udemycdn.com/meta/default-meta-image-v2.png"
 
 
 def get_courses():
