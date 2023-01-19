@@ -1,22 +1,30 @@
 import pandas as pd
 import requests
 import streamlit as st
+import math
 from bs4 import BeautifulSoup
 
 
 courses = pd.read_csv("courses_edited.csv")
 comments = pd.read_csv("comments_edited.csv")
 
-
-
 def create_selection_expander(selectionType, options):
+    count=0 
     st.session_state[selectionType] = ["Any " + selectionType]
-    count=0
+
+    x="d"
+    if selectionType=="category": x="a"
+    elif selectionType=="subcategory": x="b"
+    elif selectionType=="topic": x="d"
+    elif selectionType=="language": x="e"
+   
     with st.expander("Select " + selectionType):
         selected = st.empty()
         for option in options:
             count=count+1
-            if st.checkbox(option, key=str(option)+str(count)): #chiave univoca
+            #print(option)
+            if isinstance(option, float): option="?" #per evitare valori nan
+            if st.checkbox(option, key=x+str(count)): #chiave univoca checkbox
                 st.session_state[selectionType].append(option)
                 if "Any " + selectionType in st.session_state[selectionType]:
                     st.session_state[selectionType].remove("Any " + selectionType)
@@ -123,6 +131,10 @@ def get_courses():
     ]
 
     list=courses[courses['topic'].isin(st.session_state["topic"])]
+    list=list[list['language'].isin(st.session_state["language"])]
+    list = list[list['price']<=st.session_state["max"]]
+    list = list[list['price']>=st.session_state["min"]]
+    print(st.session_state["min"])
 
     return list
 
