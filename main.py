@@ -14,8 +14,10 @@ st.markdown("""
         
     div[data-testid="stExpander"], 
     div[data-testid="stVerticalBlock"] > div[data-testid="stHorizontalBlock"]:only-child{
-        background-color: #262626;
-        border: 1px solid #5f5760;
+        /*background-color: #262626;*/
+        background-color: #262730;
+        /*border: 1px solid #5f5760;*/
+        border: 0px none #262730;
         border-radius: 5px;
     }
     
@@ -37,7 +39,6 @@ st.write("You don't know what you are looking for? Check the courses summary!")
 be.create_selection_expander("language", be.languages())
 
 col1, col2, col3 = st.columns(3)
-
 with col1:
     be.create_selection_expander("category", be.categories())
 
@@ -48,15 +49,30 @@ with col3:
     be.create_selection_expander("topic", be.topics())
 
 col1, col2, col3 = st.columns(3)
-
 with col1:
     free=st.checkbox("Only free courses")
 
 with col2:
-    st.session_state["min"]=st.number_input("Minimum price", 0)
+    st.session_state.min =st.number_input("Minimum price", 0)
 
 with col3:
-    st.session_state["max"]=st.number_input("Maximum price", min_value=1, value=int(be.maxprice()))
+    st.session_state.max = st.number_input("Maximum price", min_value=1, value=round(be.maxprice()))
+
+col1, col2 = st.columns(2)
+with col1:
+    st.session_state.pub_date = st.selectbox("Publishing date", ["Today", "Last week", "Last month", "Last three months", "Last year", "Anytime"], index=5)
+with col2:
+    st.session_state.upd_date = st.selectbox("Last updated", ["Today", "Last week", "Last month", "Last three months", "Last year", "Anytime"], index=5)
+
+col1, col2 = st.columns(2)
+with col1:
+    st.session_state.order = st.selectbox("Order results by", ["Rating", "Subscriptions", "Engagement"])
+with col2:
+    order_period = st.empty()
+
+if "order" in st.session_state and st.session_state.order != "Subscriptions":
+    with order_period:
+        st.selectbox(st.session_state.order + " during", ["Today", "Last week", "Last month", "Last three months", "Last year", "Anytime"], index=5)
     
 with queryNL:
     st.write("I'm looking for a course in " + be.list_to_string("language").lower() + " about " + be.list_to_string("category").lower())
