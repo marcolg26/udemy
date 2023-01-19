@@ -58,19 +58,19 @@ with col3:
 
 col1, col2 = st.columns(2)
 with col1:
-    st.session_state.pub_date = st.selectbox("Publishing date", ["Today", "Last week", "Last month", "Last three months", "Last year", "Anytime"], index=5)
+    st.session_state.pub_date = st.selectbox("Publishing date", ["Last three months", "Last year", "Anytime"], index=2)
 with col2:
-    st.session_state.upd_date = st.selectbox("Last updated", ["Today", "Last week", "Last month", "Last three months", "Last year", "Anytime"], index=5)
+    st.session_state.upd_date = st.selectbox("Last updated", ["Last three months", "Last year", "Anytime"], index=2)
 
 col1, col2 = st.columns(2)
 with col1:
-    st.session_state.order = st.selectbox("Order results by", ["Rating", "Subscriptions", "Engagement"])
+    st.session_state.order = st.selectbox("Order results by", ["Rating", "Publishing date", "Subscriptions", "Engagement"])
 with col2:
     order_period = st.empty()
 
-if "order" in st.session_state and st.session_state.order != "Subscriptions":
-    with order_period:
-        st.selectbox(st.session_state.order + " during", ["Today", "Last week", "Last month", "Last three months", "Last year", "Anytime"], index=5)
+#if "order" in st.session_state and st.session_state.order != "Subscriptions":
+    #with order_period:
+        #st.selectbox(st.session_state.order + " during", ["Today", "Last week", "Last month", "Last three months", "Last year", "Anytime"], index=5)
     
 with queryNL:
     st.write("I'm looking for a course in " + be.list_to_string("language").lower() + " about " + be.list_to_string("category").lower())

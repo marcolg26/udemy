@@ -1,8 +1,9 @@
 import pandas as pd
 import requests
 import streamlit as st
-import math
 from bs4 import BeautifulSoup
+import datetime
+from dateutil.relativedelta import *
 
 
 courses = pd.read_csv("courses_edited.csv")
@@ -69,6 +70,44 @@ def get_courses():
         list = list[list['price']==0]
     else: list = list[list['price']<=st.session_state["max"]]
     list = list[list['price']>=st.session_state["min"]]
+
+    if st.session_state.pub_date!="Anytime":
+
+        use_date = datetime.datetime.now()
+        
+        if st.session_state.pub_date=="Last year":
+            use_date = use_date + datetime.timedelta(days=-365)
+        elif st.session_state.pub_date=="Last tree months":
+            use_date = use_date + datetime.timedelta(days=-90)
+
+        use_date1=use_date.date()
+            
+        list['published_time']= pd.to_datetime(list['published_time']).dt.date
+            
+        list = list[list['published_time']>use_date1]
+
+    if st.session_state.upd_date!="Anytime":
+
+        use_date = datetime.datetime.now()
+        
+        if st.session_state.upd_date=="Last year":
+            use_date = use_date + datetime.timedelta(days=-365)
+        elif st.session_state.upd_date=="Last tree months":
+            use_date = use_date + datetime.timedelta(days=-90)
+
+        use_date1=use_date.date()
+            
+        list['last_update_date']= pd.to_datetime(list['last_update_date']).dt.date
+            
+        list = list[list['last_update_date']>use_date1]
+
+
+    if st.session_state.order=="Subscriptions":
+        list.sort_values(by='num_subscribers', inplace=True, ascending=False)
+    elif st.session_state.order=="Rating":
+        list.sort_values(by='avg_rating', inplace=True, ascending=False)
+    elif st.session_state.order=="Publishing date":
+        list.sort_values(by='published_time', inplace=True, ascending=False)
 
     return list
 
