@@ -16,15 +16,14 @@ def create_selection_expander(selectionType, options):
     x="d"
     if selectionType=="category": x="a"
     elif selectionType=="subcategory": x="b"
-    elif selectionType=="topic": x="d"
+    elif selectionType=="topic": x="c"
     elif selectionType=="language": x="e"
    
     with st.expander("Select " + selectionType):
         selected = st.empty()
         for option in options:
             count=count+1
-            #print(option)
-            if isinstance(option, float): option="?" #per evitare valori nan
+            if isinstance(option, float): option="(other)" #per evitare valori nan
             if st.checkbox(option, key=x+str(count)): #chiave univoca checkbox
                 st.session_state[selectionType].append(option)
                 if "Any " + selectionType in st.session_state[selectionType]:
@@ -60,11 +59,13 @@ def find_course_img_url(course_url):
 
 
 def get_courses():
+
     list = courses[courses['topic'].isin(st.session_state["topic"])]
     list=list[list['language'].isin(st.session_state["language"])]
-    list = list[list['price']<=st.session_state["max"]]
+    if st.session_state["free"]:
+        list = list[list['price']==0]
+    else: list = list[list['price']<=st.session_state["max"]]
     list = list[list['price']>=st.session_state["min"]]
-    print(st.session_state["min"])
 
     return list
 
