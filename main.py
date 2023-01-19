@@ -50,13 +50,13 @@ with col3:
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.checkbox("Only free courses")
+    free=st.checkbox("Only free courses")
 
 with col2:
-    st.number_input("Minimum price", 0)
+    st.session_state["min"]=st.number_input("Minimum price", 0)
 
 with col3:
-    st.number_input("Maximum price", be.maxprice())
+    st.session_state["max"]=st.number_input("Maximum price", min_value=1, value=int(be.maxprice()))
     
 with queryNL:
     st.write("I'm looking for a course in " + be.list_to_string("language").lower() + " about " + be.list_to_string("category").lower())
@@ -84,7 +84,7 @@ if st.button("Search!"):
     
                 st.caption("<span>" + str(course.num_reviews) + " reviews and " + str(course.num_comments) + " comments: " + "</span>", True)
                 
-                if course.price==0:
+                if course.price!=0:
                     st.caption("Price: **" + str(course.price) + "** $")
                 else:
                     st.caption(":green[Free course!]")          
