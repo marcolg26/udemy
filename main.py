@@ -78,9 +78,10 @@ with queryNL:
 if st.button("Search!"):
 
     courses = be.get_courses()
-    
-    st.header("Top results")
-    
+
+    if(courses.size==0): st.header("No results :(")
+    else: st.header("Top results ("+str(courses.size)+")")
+
     for index, course in courses.iterrows():
         with st.container():
             col1, col2 = st.columns(2)
