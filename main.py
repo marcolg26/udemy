@@ -80,7 +80,7 @@ if st.button("Search!"):
     courses = be.get_courses()
 
     if(courses.size==0): st.header("No results :(")
-    else: st.header("Top results ("+str(courses.size)+")")
+    else: st.header("Top results ("+str(len(courses))+")")
 
     for index, course in courses.iterrows():
         with st.container():
