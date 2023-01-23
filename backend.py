@@ -160,7 +160,6 @@ def topics():  #
     top=courses[courses['subcategory'].isin(st.session_state["subcategory"])]
     return top["topic"].unique()
 
-
 def maxprice():  #
     return round(courses["price"].max(), 0)
 
@@ -169,3 +168,6 @@ def getcourseinfo(id):  #
 
 def getcoursecomm(id):  #
     return comments[comments['course_id']==id]
+
+def getauthorcourses(author):  #
+    return courses[courses['instructor_url']==author]
