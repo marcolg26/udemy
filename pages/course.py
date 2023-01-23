@@ -1,12 +1,19 @@
 import streamlit as st
 import backend as be
 
-st.session_state["course_id"]=7723
+st.set_page_config(layout="wide")
 
-course=be.getcourseinfo(st.session_state["course_id"])
+course_id = st.experimental_get_query_params()
+
+if len(course_id) == 0:
+    st.header("Couldn't find this course, maybe it has been deleted")
+else:
+    course_id = float(course_id["cid"][0])
+
+course=be.getcourseinfo(course_id)
 st.header(course['title'].iloc[0])
 
-comments=be.getcoursecomm(st.session_state["course_id"])
+comments=be.getcoursecomm(course_id)
 
 if(comments.size==0): st.subheader("No comments :(")
 else: st.subheader("Comments ("+str(len(comments))+")")

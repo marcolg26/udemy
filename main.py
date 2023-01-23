@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
-import backend as be 
+import backend as be
+
 
 st.set_page_config(layout="wide")
 
@@ -10,6 +11,10 @@ st.markdown("""
         visibility: hidden;
     }
         
+    a {
+        color: #b27eff !important;
+    }
+
     div[data-testid="stExpander"], 
     div[data-testid="stVerticalBlock"] > div[data-testid="stHorizontalBlock"]:only-child{
         /*background-color: #262626;*/
@@ -110,3 +115,5 @@ if st.button("Search!"):
                     st.caption("Duration: " + str(round(course.content_length_min)) + " minutes (" + str(round(course.num_lectures)) + " lectures)")
                     
                 st.write(course.headline)
+
+                st.markdown("<a href=\"/course?cid=" + str(course.id) + "\" target=\"_self\">View more</a>", True)
