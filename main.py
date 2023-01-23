@@ -91,7 +91,7 @@ if st.button("Search!"):
             with col2:
                 st.subheader(course.title)
 
-                instructor_name = "<a href=\"/author\" target=\"self\">" + course.instructor_name + "</a>"
+                instructor_name = "<a href=\"/author?u=" + course.instructor_url + "\" target=\"_self\">" + course.instructor_name + "</a>"
                 st.caption("Course by " + instructor_name, True)
     
                 st.caption(str(round(course.num_subscribers)) + " people subscribed to this course")
