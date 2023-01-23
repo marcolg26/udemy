@@ -83,7 +83,7 @@ if st.button("Search!"):
     else: st.header("Top results ("+str(len(courses))+")")
 
     for index, course in courses.iterrows():
-        print(course.id)
+        #print(course.id)
         with st.container():
             col1, col2 = st.columns(2)
             with col1:
@@ -96,8 +96,10 @@ if st.button("Search!"):
     
                 st.caption(str(round(course.num_subscribers)) + " people subscribed to this course")
                 be.draw_rating(course.avg_rating)
+
+                comm = "<a href=\"/course?u=" + str(round(course.id)) + "\" target=\"_self\">comments</a>"
     
-                st.caption("<span>" + str(round(course.num_reviews)) + " reviews and " + str(round(course.num_comments)) + " comments: " + "</span>", True)
+                st.caption("<span>" + str(round(course.num_reviews)) + " reviews and " + str(round(course.num_comments)) + comm + "</span>", True)
                 
                 if course.price!=0:
                     st.caption("Price: **" + str(course.price) + "**$")
