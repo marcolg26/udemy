@@ -163,3 +163,9 @@ def topics():  #
 
 def maxprice():  #
     return round(courses["price"].max(), 0)
+
+def getcourseinfo(id):  #
+    return courses[courses['id']==id]
+
+def getcoursecomm(id):  #
+    return comments[comments['course_id']==id]
