@@ -213,3 +213,6 @@ def getcoursecomm(id):  #
 
 def getauthorcourses(author):  #
     return courses[courses['instructor_url'] == author]
+
+def stats():  #
+    return courses['category'].value_counts()
