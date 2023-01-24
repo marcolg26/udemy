@@ -10,6 +10,36 @@ courses = pd.read_csv("courses_edited.csv")
 comments = pd.read_csv("comments_edited.csv")
 
 
+def style():
+    st.set_page_config(layout="wide")
+
+    st.markdown("""
+    <style>
+        button[title="View fullscreen"]{
+            visibility: hidden;
+        }
+            
+        a {
+            color: #b27eff !important;
+        }
+
+        div[data-testid="stExpander"], 
+        div[data-testid="stVerticalBlock"] > div[data-testid="stHorizontalBlock"]:only-child{
+            /*background-color: #262626;*/
+            background-color: #262730;
+            /*border: 1px solid #5f5760;*/
+            border: 0px none #262730;
+            border-radius: 5px;
+        }
+        
+        div[data-testid="stImage"] > img{
+            align-items: center;
+            border-radius: 5px;
+        }
+    </style>
+    """, True)
+
+
 def create_selection_expander(selectionType, options):
     count=0 
     st.session_state[selectionType] = ["Any " + selectionType]

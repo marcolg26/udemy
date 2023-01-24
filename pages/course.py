@@ -1,6 +1,8 @@
 import streamlit as st
 import backend as be
 
+be.style()
+
 arg = st.experimental_get_query_params()
 
 course_ID=int(arg["cid"][0])

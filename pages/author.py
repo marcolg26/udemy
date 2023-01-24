@@ -1,7 +1,7 @@
 import streamlit as st
 import backend as be
 
-st.set_page_config(layout="wide")
+be.style()
 
 instructor_url = st.experimental_get_query_params()
 
