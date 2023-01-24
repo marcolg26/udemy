@@ -14,4 +14,4 @@ categories=be.stats()
 
 print(categories.info())
 
-st.write(categories.plot())
+categories.plot()
