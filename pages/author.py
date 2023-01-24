@@ -12,9 +12,9 @@ if len(instructor_url) == 0:
 else:
     st.header(instructor_url["u"][0])
 
-    courses=be.getauthorcourses(instructor_url["u"][0])
+    courses = be.getauthorcourses(instructor_url["u"][0])
 
-    i=0
+    i = 0
     for course in courses.iterrows():
         st.write(courses['title'].iloc[i])
-        i=i+1
+        i = i+1

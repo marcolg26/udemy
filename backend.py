@@ -41,24 +41,30 @@ def style():
 
 
 def create_selection_expander(selectionType, options):
-    count=0 
+    count = 0
     st.session_state[selectionType] = ["Any " + selectionType]
 
-    x="d"
-    if selectionType=="category": x="a"
-    elif selectionType=="subcategory": x="b"
-    elif selectionType=="topic": x="c"
-    elif selectionType=="language": x="e"
-   
+    x = "d"
+    if selectionType == "category":
+        x = "a"
+    elif selectionType == "subcategory":
+        x = "b"
+    elif selectionType == "topic":
+        x = "c"
+    elif selectionType == "language":
+        x = "e"
+
     with st.expander("Select " + selectionType):
         selected = st.empty()
         for option in options:
-            count=count+1
-            if isinstance(option, float): option="(other)" #per evitare valori nan
-            if st.checkbox(option, key=x+str(count)): #chiave univoca checkbox
+            count = count+1
+            if isinstance(option, float):
+                option = "(other)"  # per evitare valori nan
+            if st.checkbox(option, key=x+str(count)):  # chiave univoca checkbox
                 st.session_state[selectionType].append(option)
                 if "Any " + selectionType in st.session_state[selectionType]:
-                    st.session_state[selectionType].remove("Any " + selectionType)
+                    st.session_state[selectionType].remove(
+                        "Any " + selectionType)
 
             elif option in st.session_state[selectionType]:
                 st.session_state[selectionType].remove(option)
@@ -95,48 +101,49 @@ def find_course_img_url(course_url):
 def get_courses():
 
     list = courses[courses['topic'].isin(st.session_state["topic"])]
-    list=list[list['language'].isin(st.session_state["language"])]
+    list = list[list['language'].isin(st.session_state["language"])]
     if st.session_state["free"]:
-        list = list[list['price']==0]
-    else: list = list[list['price']<=st.session_state["max"]]
-    list = list[list['price']>=st.session_state["min"]]
+        list = list[list['price'] == 0]
+    else:
+        list = list[list['price'] <= st.session_state["max"]]
+    list = list[list['price'] >= st.session_state["min"]]
 
-    if st.session_state.pub_date!="Anytime":
-
-        use_date = datetime.datetime.now()
-        
-        if st.session_state.pub_date=="Last year":
-            use_date = use_date + datetime.timedelta(days=-365)
-        elif st.session_state.pub_date=="Last tree months":
-            use_date = use_date + datetime.timedelta(days=-90)
-
-        use_date1=use_date.date()
-            
-        list['published_time']= pd.to_datetime(list['published_time']).dt.date
-            
-        list = list[list['published_time']>use_date1]
-
-    if st.session_state.upd_date!="Anytime":
+    if st.session_state.pub_date != "Anytime":
 
         use_date = datetime.datetime.now()
-        
-        if st.session_state.upd_date=="Last year":
+
+        if st.session_state.pub_date == "Last year":
             use_date = use_date + datetime.timedelta(days=-365)
-        elif st.session_state.upd_date=="Last tree months":
+        elif st.session_state.pub_date == "Last tree months":
             use_date = use_date + datetime.timedelta(days=-90)
 
-        use_date1=use_date.date()
-            
-        list['last_update_date']= pd.to_datetime(list['last_update_date']).dt.date
-            
-        list = list[list['last_update_date']>use_date1]
+        use_date1 = use_date.date()
 
+        list['published_time'] = pd.to_datetime(list['published_time']).dt.date
 
-    if st.session_state.order=="Subscriptions":
+        list = list[list['published_time'] > use_date1]
+
+    if st.session_state.upd_date != "Anytime":
+
+        use_date = datetime.datetime.now()
+
+        if st.session_state.upd_date == "Last year":
+            use_date = use_date + datetime.timedelta(days=-365)
+        elif st.session_state.upd_date == "Last tree months":
+            use_date = use_date + datetime.timedelta(days=-90)
+
+        use_date1 = use_date.date()
+
+        list['last_update_date'] = pd.to_datetime(
+            list['last_update_date']).dt.date
+
+        list = list[list['last_update_date'] > use_date1]
+
+    if st.session_state.order == "Subscriptions":
         list.sort_values(by='num_subscribers', inplace=True, ascending=False)
-    elif st.session_state.order=="Rating":
+    elif st.session_state.order == "Rating":
         list.sort_values(by='avg_rating', inplace=True, ascending=False)
-    elif st.session_state.order=="Publishing date":
+    elif st.session_state.order == "Publishing date":
         list.sort_values(by='published_time', inplace=True, ascending=False)
 
     return list
@@ -183,21 +190,26 @@ def categories():  #
 
 
 def subcategories():  #
-    sub=courses[courses['category'].isin(st.session_state["category"])]
+    sub = courses[courses['category'].isin(st.session_state["category"])]
     return sub["subcategory"].unique()
 
+
 def topics():  #
-    top=courses[courses['subcategory'].isin(st.session_state["subcategory"])]
+    top = courses[courses['subcategory'].isin(st.session_state["subcategory"])]
     return top["topic"].unique()
+
 
 def maxprice():  #
     return round(courses["price"].max(), 0)
 
+
 def getcourseinfo(id):  #
-    return courses[courses['id']==id]
+    return courses[courses['id'] == id]
+
 
 def getcoursecomm(id):  #
-    return comments[comments['course_id']==id]
+    return comments[comments['course_id'] == id]
+
 
 def getauthorcourses(author):  #
-    return courses[courses['instructor_url']==author]
+    return courses[courses['instructor_url'] == author]
