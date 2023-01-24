@@ -39,6 +39,15 @@ def style():
     </style>
     """, True)
 
+    return
+
+
+def set_page(num):
+    st.session_state.page_num = num 
+    return
+
+def set_display_search_results(b):
+    st.session_state.display_search_results = b
 
 def create_selection_expander(selectionType, options):
     count = 0
@@ -60,7 +69,7 @@ def create_selection_expander(selectionType, options):
             count = count+1
             if isinstance(option, float):
                 option = "(other)"  # per evitare valori nan
-            if st.checkbox(option, key=x+str(count)):  # chiave univoca checkbox
+            if st.checkbox(option, key=x+str(count), on_change=set_display_search_results, args=[False]):  # chiave univoca checkbox
                 st.session_state[selectionType].append(option)
                 if "Any " + selectionType in st.session_state[selectionType]:
                     st.session_state[selectionType].remove(
@@ -86,15 +95,15 @@ def list_to_string(selector):
 
 
 def find_course_img_url(course_url):
-    response = requests.get("https://www.udemy.com" + course_url)
-    soup = BeautifulSoup(response.text, "html.parser")
+    #response = requests.get("https://www.udemy.com" + course_url)
+    #soup = BeautifulSoup(response.text, "html.parser")
 
-    image_tags = soup.find_all("img", attrs={"srcset": True})
-    if len(image_tags) > 0:
-        url = [img["srcset"] for img in image_tags][0].split(", ")[-1]
+    #image_tags = soup.find_all("img", attrs={"srcset": True})
+    #if len(image_tags) > 0:
+        #url = [img["srcset"] for img in image_tags][0].split(", ")[-1]
 
-        return url.split()[0]
-    else:
+        #return url.split()[0]
+    #else:
         return "https://s.udemycdn.com/meta/default-meta-image-v2.png"
 
 
