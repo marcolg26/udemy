@@ -3,7 +3,7 @@ import backend as be
 
 arg = st.experimental_get_query_params()
 
-course_ID=int(arg["u"][0])
+course_ID=int(arg["cid"][0])
 
 course=be.getcourseinfo(course_ID)
 comments=be.getcoursecomm(course_ID)
