@@ -4,24 +4,28 @@ import backend as be
 be.style()
 
 arg = st.experimental_get_query_params()
+st.experimental_set_query_params()
 
-course_ID = int(arg["cid"][0])
-
-course = be.getcourseinfo(course_ID)
-comments = be.getcoursecomm(course_ID)
-
-if (course.size == 0):
-    st.subheader("ID not found")
+if len(arg) == 0 or "cid" not in arg:
+    st.header("Couldn't find this course, maybe it has been deleted")
 else:
-    st.header(course['title'].iloc[0])
+    course_ID = int(arg["cid"][0])
 
-    if (comments.size == 0):
-        st.subheader("No comments :(")
+    course = be.getcourseinfo(course_ID)
+    comments = be.getcoursecomm(course_ID)
+
+    if course.size == 0:
+        st.subheader("ID not found")
     else:
-        st.subheader("Comments ("+str(len(comments))+")")
-        i = 0
-        for comment in comments.iterrows():
-            st.write(str(comments['display_name'].iloc[i])+":")
-            be.draw_rating(comments['rate'].iloc[i])
-            st.write(comments['comment'].iloc[i])
-            i = i+1
+        st.header(course['title'].iloc[0])
+
+        if (comments.size == 0):
+            st.subheader("No comments :(")
+        else:
+            st.subheader("Comments ("+str(len(comments))+")")
+            i = 0
+            for comment in comments.iterrows():
+                st.write(str(comments['display_name'].iloc[i])+":")
+                be.draw_rating(comments['rate'].iloc[i])
+                st.write(comments['comment'].iloc[i])
+                i = i+1
