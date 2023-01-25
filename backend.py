@@ -94,8 +94,8 @@ def list_to_string(selector):
     return string
 
 
-def find_udemy_img_url(course_url):
-    #response = requests.get("https://www.udemy.com" + course_url)
+def find_udemy_img_url(url, type="course"):
+    #response = requests.get("https://www.udemy.com" + url)
     #soup = BeautifulSoup(response.text, "html.parser")
 
     #image_tags = soup.find_all("img", attrs={"srcset": True})
@@ -104,7 +104,10 @@ def find_udemy_img_url(course_url):
 
         #return url.split()[0]
     #else:
-        return "https://s.udemycdn.com/meta/default-meta-image-v2.png"
+        if type == "course":
+            return "https://s.udemycdn.com/meta/default-meta-image-v2.png"
+        elif type == "author":
+            return "https://play-lh.googleusercontent.com/dsCkmJE2Fa8IjyXERAcwc5YeQ8_NvbZ4_OI8LgqyjILpXUfS5YhEcnAMajKPrZI-og"
 
 
 def get_courses():
