@@ -91,7 +91,7 @@ if st.session_state.display_search_results:
             with st.container():
                 col1, col2 = st.columns(2)
                 with col1:
-                    st.image(be.find_course_img_url(course.course_url))
+                    st.image(be.find_udemy_img_url(course.course_url))
                 with col2:
                     st.subheader(course.title)
 
@@ -139,7 +139,7 @@ if st.session_state.display_search_results:
                         align-items: center !important;
                         justify-content: center !important;
                         position: relative !important;
-                        left: 50%vw !important;
+                        left: 50vw !important;
                     }
                 </style>
             """, True)

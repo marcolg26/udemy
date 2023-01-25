@@ -94,7 +94,7 @@ def list_to_string(selector):
     return string
 
 
-def find_course_img_url(course_url):
+def find_udemy_img_url(course_url):
     #response = requests.get("https://www.udemy.com" + course_url)
     #soup = BeautifulSoup(response.text, "html.parser")
 
