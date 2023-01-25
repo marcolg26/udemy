@@ -109,7 +109,14 @@ def find_udemy_img_url(course_url):
 
 def get_courses():
 
-    list = courses[courses['topic'].isin(st.session_state["topic"])]
+    if(st.session_state["topic"][0]=="Any topic"):
+        if(st.session_state["subcategory"][0]=="Any subcategory"):
+            list = courses[courses['category'].isin(st.session_state["category"])]
+        else:
+            list = courses[courses['subcategory'].isin(st.session_state["subcategory"])]
+
+    else: list = courses[courses['topic'].isin(st.session_state["topic"])]
+
     list = list[list['language'].isin(st.session_state["language"])]
     if st.session_state["free"]:
         list = list[list['price'] == 0]
