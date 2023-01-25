@@ -186,8 +186,8 @@ def draw_rating(rating):
         + str(rating)
         + "/5)</span>"
     )
-    st.caption(svg_html, True)
-    return
+    
+    return svg_html
 
 
 def languages():  #

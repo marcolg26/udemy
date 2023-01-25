@@ -44,6 +44,5 @@ else:
 
     with col4:
         st.subheader("Average rating")
-        mean_rating = courses["avg_rating"].mean()
-        be.draw_rating(mean_rating)
-        st.write(str(mean_rating))
+        mean_rating = round(courses["avg_rating"].mean(), 2)
+        st.write(be.draw_rating(mean_rating), unsafe_allow_html=True)

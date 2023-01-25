@@ -77,7 +77,6 @@ if st.session_state.display_search_results:
         st.header("Top results ("+str(courses_num)+")")
 
         if "page_num" not in st.session_state:
-            st.header("Inizializzazione pagine")
             st.session_state.page_num = 1
 
         page_limit = 2
@@ -101,7 +100,7 @@ if st.session_state.display_search_results:
 
                     st.caption(str(round(course.num_subscribers)) +
                                " people subscribed to this course")
-                    be.draw_rating(course.avg_rating)
+                    st.caption(be.draw_rating(course.avg_rating), True)
 
                     # comm = "<a href=\"/course?u=" + str(round(course.id)) + "\" target=\"_self\"> comments</a>"
 
