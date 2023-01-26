@@ -61,7 +61,7 @@ else:
 
     st.subheader("Course ratings insight")
 
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     with col1:
         st.subheader("Rating per course")
 
@@ -71,8 +71,8 @@ else:
         })
    
         plot = alt.Chart(source).mark_bar().encode(
-            alt.X("Average Rating", scale=alt.Scale(domain=(0,5))),
-            y="Course"
+            alt.X("Average Rating", scale=alt.Scale(domain=(0,5)), title=None),
+            alt.Y("Course", title=None)
         ).configure_mark(color="gold")
 
         st.altair_chart(plot, use_container_width=True)
@@ -95,11 +95,12 @@ else:
         source = pd.concat([sourceRev, sourceCom])
         
         plot = alt.Chart(source).mark_bar().encode(
-            x="N° interactions:Q",
-            y="Type:O",
-            color="Type:N",
-            row="Course:N"
+            x=alt.X("N° interactions:Q", title=None),
+            y=alt.Y("Type:N", title=None, axis=alt.Axis(labels=False)),
+            color=alt.Color('Type', scale=alt.Scale(domain=["Comments", "Reviews"], range=["#b27eff", "gold"])),
+            row=alt.Row("Course:N", header=alt.Header(labelAlign="left", labelPadding=15, labelColor="white", labelAngle=0, labelLimit=100, labelFontSize=12), spacing=10),
+            tooltip=["N° interactions:Q", "Type:N", "Course:N"]
         )
 
-        st.altair_chart(plot, use_container_width=True)
+        st.altair_chart(plot, use_container_width=False)
 
