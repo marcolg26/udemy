@@ -5,10 +5,23 @@ be.style()
 
 st.header("Courses summary")
 
-st.write("Brief insight on what should you want to learn given what we can discover using the exploration of our dataset")
+st.write("")
 
-categories=be.stats()
+courses=be.coursesdb()
+comments=be.commentsdb()
 
-print(categories.info())
+courses, comments, instructors = be.counts()
 
-categories.plot()
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.header("Total courses:")
+    st.subheader(courses)
+
+with col2:
+    st.header("Total instructors:")
+    st.subheader(instructors)
+
+with col3:
+    st.header("Total comments:")
+    st.subheader(comments)
