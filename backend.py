@@ -233,5 +233,11 @@ def getcoursecomm(id):  #
 def getauthorcourses(author):  #
     return courses[courses['instructor_url'] == author]
 
-def stats():  #
-    return courses['category'].value_counts()
+def coursesdb():  #
+    return courses
+
+def commentsdb():  #
+    return comments
+
+def counts():  #
+    return len(courses), len(comments), len(courses["instructor_name"].unique())
