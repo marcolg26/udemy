@@ -61,7 +61,7 @@ else:
 
     st.subheader("Course ratings insight")
 
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3 = st.columns([1, 2, 2])
     with col1:
         st.subheader("Rating per course")
 
@@ -101,6 +101,20 @@ else:
             row=alt.Row("Course:N", header=alt.Header(labelAlign="left", labelPadding=15, labelColor="white", labelAngle=0, labelLimit=100, labelFontSize=12), spacing=10),
             tooltip=["N° interactions:Q", "Type:N", "Course:N"]
         )
+
+        st.altair_chart(plot, use_container_width=False)
+
+    with col3:
+        st.subheader("Number of courses by rating")
+        source = pd.DataFrame({
+            "Average Rating": courses.avg_rating.values,
+            "Course": courses.title.values
+        })
+        
+        plot = alt.Chart(source).mark_bar().encode(
+            alt.X("Average Rating:Q", title=None, bin=alt.Bin(extent=[0, 5], step=0.5)),
+            alt.Y("count()", title=None)
+        ).configure_mark(color="gold")
 
         st.altair_chart(plot, use_container_width=False)
 
