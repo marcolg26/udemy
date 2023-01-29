@@ -120,7 +120,9 @@ def get_courses():
 
     else: list = courses[courses['topic'].isin(st.session_state["topic"])]
 
-    list = list[list['language'].isin(st.session_state["language"])]
+    if(st.session_state["language"][0]!="Any language"):
+        list = list[list['language'].isin(st.session_state["language"])]
+        
     if st.session_state["free"]:
         list = list[list['price'] == 0]
     else:
