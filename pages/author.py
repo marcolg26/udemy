@@ -123,7 +123,14 @@ else:
         st.empty()
 
     st.header("Activity")
-    st.subheader("Publish and update course dates with number of subscribers")
+
+    placeholder = st.container()
+    plot_select = st.selectbox("View", options=["N° of subscribers", "Average rating"], index=0)
+
+    if plot_select == "N° of subscribers":
+        with placeholder: st.subheader("Publish and update course dates with number of subscribers")
+    else:
+        with placeholder: st.subheader("Publish and update course dates with rating")
 
     sourcePub = pd.DataFrame({
         "Date": pd.to_datetime(courses['published_time']).dt.date,
@@ -141,48 +148,24 @@ else:
         "Course": courses.title.values
     })
 
-    source = pd.concat([sourcePub, sourceUp]).sort_values("N° of subscribers")
+    source = pd.concat([sourcePub, sourceUp]).sort_values(plot_select)
 
     plot = alt.Chart(source)
 
     line = plot.mark_line(opacity=0.5, strokeWidth=2, color="white").encode(
         alt.X("yearmonth(Date):T", title=None),
-        y="N° of subscribers"
+        y=plot_select
     )
 
     points = plot.mark_point(size=80, filled=True, point="transparent", opacity=1).encode(
         alt.X("yearmonth(Date):T"),
-        alt.Y("N° of subscribers", axis=alt.Axis(titleAnchor="start",
+        alt.Y(plot_select, axis=alt.Axis(titleAnchor="start",
               titleAngle=0, titleY=-15, titleAlign="center")),
         color=alt.Color('Type', scale=alt.Scale(
             domain=["Last update", "Pubblication"], range=["gold", "violet"])),
         shape=alt.Shape("Type:N", scale=alt.Scale(
             domain=["Last update", "Pubblication"], range=["cross", "circle"])),
-        tooltip=["N° of subscribers:Q", "Date:T", "Course:N"]
-    )
-
-    st.altair_chart(line + points, use_container_width=True)
-
-    st.subheader("Publish and update course dates with rating")
-
-    source = pd.concat([sourcePub, sourceUp]).sort_values("Average rating")
-
-    plot = alt.Chart(source)
-
-    line = plot.mark_line(opacity=0.5, strokeWidth=2, color="white").encode(
-        alt.X("yearmonth(Date):T", title=None),
-        y="Average rating"
-    )
-
-    points = plot.mark_point(size=80, filled=True, point="transparent", opacity=1).encode(
-        alt.X("yearmonth(Date):T"),
-        alt.Y("Average rating", axis=alt.Axis(titleAnchor="start",
-              titleAngle=0, titleY=-15, titleAlign="center")),
-        color=alt.Color('Type', scale=alt.Scale(
-            domain=["Last update", "Pubblication"], range=["gold", "violet"])),
-        shape=alt.Shape("Type:N", scale=alt.Scale(
-            domain=["Last update", "Pubblication"], range=["cross", "circle"])),
-        tooltip=["Average rating:Q", "Date:T", "Course:N"]
+        tooltip=[plot_select, "Date:T", "Course:N"]
     )
 
     st.altair_chart(line + points, use_container_width=True)
