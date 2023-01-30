@@ -43,8 +43,30 @@ with col2:
 
     category = st.selectbox("Select category", options=be.categories(), index=0)
 
-    coursesdb=coursesdb[coursesdb['category']==category]
-    chart= alt.Chart(coursesdb).mark_bar().encode(y='subcategory', x='count()')
+    chart= alt.Chart(coursesdb[coursesdb['category']==category]).mark_bar().encode(y='subcategory', x='count()')
     chart.encoding.x.title = 'courses'
 
     st.altair_chart(chart, use_container_width=True)
+
+
+col1, col2 = st.columns(2)
+with col1:
+    st.subheader("Languages")
+
+    source = pd.DataFrame(
+    {"language": coursesdb["language"].unique(), "value": 0})
+
+    for index, row in source.iterrows():
+        source.loc[source['language'] == row["language"], ['value']]= len(coursesdb[coursesdb['language'] == row["language"]])
+    
+    pie= alt.Chart(source).mark_arc(innerRadius=50).encode(
+    theta=alt.Theta(field="value", type="quantitative"),
+    color=alt.Color(field="language", type="nominal"),
+    )
+
+    st.altair_chart(pie, use_container_width=True)
+    
+
+
+
+
