@@ -166,6 +166,10 @@ def get_courses():
         list.sort_values(by='avg_rating', inplace=True, ascending=False)
     elif st.session_state.order == "Publishing date":
         list.sort_values(by='published_time', inplace=True, ascending=False)
+    elif st.session_state.order == "Suggested ✨":
+        list['avg_rating_round'] = list['avg_rating'].round(decimals = 1)
+        list.sort_values(['avg_rating_round', 'num_comments', 'num_subscribers'],
+        ascending = [False, False, False], inplace=True)
 
     return list
 

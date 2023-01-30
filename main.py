@@ -48,7 +48,7 @@ with col2:
 col1, col2 = st.columns(2)
 with col1:
     st.session_state.order = st.selectbox(
-        "Order results by", ["Rating", "Publishing date", "Subscriptions", "Engagement"])
+        "Order results by", ["Rating", "Publishing date", "Subscriptions", "Suggested ✨"])
 
 with col2:
     order_period = st.empty()
@@ -79,7 +79,7 @@ if st.session_state.display_search_results:
         if "page_num" not in st.session_state:
             st.session_state.page_num = 1
 
-        page_limit = 2
+        page_limit = 10
         if st.session_state.page_num*page_limit > courses_num:
             courses = courses[(st.session_state.page_num-1)*page_limit:]
         else:
