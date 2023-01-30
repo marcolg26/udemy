@@ -1,6 +1,12 @@
 import streamlit as st
 import backend as be
 import altair as alt
+import string
+import nltk #pip install nltk
+from nltk.corpus import stopwords #python        import nltk         nltk.download("stopwords")
+from nltk.tokenize import word_tokenize #nltk.download("punkt")
+from nltk.stem import WordNetLemmatizer #nltk.download("wordnet")
+import math
 
 be.style()
 
@@ -47,9 +53,65 @@ else:
             st.subheader("No comments :(")
         else:
             st.subheader("Top comments ("+str(len(comments))+")")
-            i = 0
-            for comment in comments.iterrows():
-                st.write(str(comments['display_name'].iloc[i])+":")
-                st.caption(be.draw_rating(comments['rate'].iloc[i]), True)
-                st.write(comments['comment'].iloc[i])
-                i = i+1
+
+            stop_words = set(stopwords.words(course.language))
+            lemmatizer = WordNetLemmatizer()
+            #st.write(stop_words)
+            comments["tokens"] = None
+
+            tf_matrix = {}
+            doc_count_matrix = {}
+
+            for index, comment in comments.iterrows():
+                st.write(str(comment['display_name'])+":")
+                st.caption(be.draw_rating(comment['rate']), True)
+                st.write(comment['comment'])
+
+                tokens = nltk.word_tokenize(comment["comment"])
+                word_count = {}
+
+                for t in tokens:
+                    if t.lower() not in stop_words and t.isalpha():
+                        t = lemmatizer.lemmatize(t.lower())
+                        if t in word_count:
+                            word_count[t] += 1
+                        else:
+                            word_count[t] = 1
+
+                        if t in doc_count_matrix:
+                            doc_count_matrix[t] += 1
+                        else:
+                            doc_count_matrix[t] = 1
+                                
+                tf_matrix[index] = {key: value / len(word_count) for key, value in word_count.items()}
+                #st.write(word_count)
+                #st.write(len(word_count))
+
+            idf_matrix = {key: math.log(len(comments) / value) for key, value in doc_count_matrix.items()}
+
+            tf_idf_matrix = {}
+            for key, comment in tf_matrix.items():
+                tf_idf_matrix[key] = {word: tf * idf_matrix[word] for word, tf in comment.items()}
+
+            #col1, col2, col3 =st.columns(3)
+            #with col1: 
+            #    st.header("tf matrix")
+            #    st.write(tf_matrix)
+
+            #with col2:
+            #    st.header("Idf matrix")
+            #    st.write(idf_matrix)
+
+            #with col3:
+            #    st.header("Tf-Idf matrix")
+            #    st.write(tf_idf_matrix)
+            
+            comments["score"] = None
+            i=0
+            for key, comment in tf_idf_matrix.items():
+                comments["score"].iloc[i] = sum(comment.values())/len(comment)
+                i = i + 1
+
+            st.header("Top comments")
+            threshold = 1.3*comments["score"].mean()
+            st.write(comments[comments["score"]>=threshold].sort_values("score", ascending=False))
