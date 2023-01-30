@@ -5,7 +5,7 @@ import altair as alt
 
 be.style()
 
-st.header("Courses summary")
+st.title("Courses summary")
 
 st.write("")
 
@@ -84,6 +84,21 @@ with col2:
     )
 
     st.altair_chart(pie, use_container_width=True)
+
+
+col1, col2 = st.columns(2)
+with col1:
+    st.subheader("New courses")
+
+    chart=alt.Chart(coursesdb).mark_line().encode(
+    x='year(published_time):T',
+    y='count()')
+    chart.encoding.x.title = 'month'
+    chart.encoding.y.title = 'new courses'
+
+    st.altair_chart(chart, use_container_width=True)
+
+
     
 
 
