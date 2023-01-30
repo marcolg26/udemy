@@ -31,8 +31,20 @@ with col3:
 col1, col2 = st.columns(2)
 with col1:
     st.subheader("Categories")
-    
+
     alt.data_transformers.disable_max_rows()
-    chart= alt.Chart(coursesdb).mark_bar().encode(x='category', y='count()')
+    chart= alt.Chart(coursesdb).mark_bar().encode(y='category', x='count()')
+    chart.encoding.x.title = 'courses'
+
+    st.altair_chart(chart, use_container_width=True)
+
+with col2:
+    st.subheader("Subcategories")
+
+    category = st.selectbox("Select category", options=be.categories(), index=0)
+
+    coursesdb=coursesdb[coursesdb['category']==category]
+    chart= alt.Chart(coursesdb).mark_bar().encode(y='subcategory', x='count()')
+    chart.encoding.x.title = 'courses'
 
     st.altair_chart(chart, use_container_width=True)
