@@ -31,13 +31,25 @@ else:
 
         st.altair_chart(chart, use_container_width=True)
 
+        st.subheader("Comments")
+
+        st.session_state.commentsorder = st.selectbox(
+        "Order comments by", ["Publishing date", "Rating (ascending)", "Rating (descending)"])
+        
+        if st.session_state.commentsorder == "Rating (ascending)":
+            comments.sort_values(by='rate', inplace=True, ascending=True)        
+        elif st.session_state.commentsorder == "Rating (descending)":
+            comments.sort_values(by='rate', inplace=True, ascending=False)
+        elif st.session_state.commentsorder == "Publishing date":
+            comments.sort_values(by='date', inplace=True, ascending=False)
+
         if (comments.size == 0):
             st.subheader("No comments :(")
         else:
-            st.header("Top comments ("+str(len(comments))+")")
+            st.subheader("Top comments ("+str(len(comments))+")")
             i = 0
             for comment in comments.iterrows():
                 st.write(str(comments['display_name'].iloc[i])+":")
-                be.draw_rating(comments['rate'].iloc[i])
+                st.caption(be.draw_rating(comments['rate'].iloc[i]), True)
                 st.write(comments['comment'].iloc[i])
                 i = i+1
