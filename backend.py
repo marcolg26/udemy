@@ -247,8 +247,8 @@ def getcoursetopcomm(id):  #
     course = getcourseinfo(id)
     course_comments = comments[comments['course_id'] == id]
 
-    if (course_comments.size == 0):
-        st.subheader("No comments :(")
+    if (course_comments.size <= 5):
+        return
     else:
         stop_words = set(stopwords.words("english"))
         stop_words = stop_words.union(set(stopwords.words("portuguese")))
@@ -331,18 +331,26 @@ def getcoursetopcomm(id):  #
         #st.write(df_weights)
         #col1, col2, col3 = st.columns(3)
         #with col1: 
-            #st.write(df_weights.sort_values("topic_0", ascending=False))
+        #    st.write(df_weights.sort_values("topic_0", ascending=False))
         #with col2: 
-            #st.write(df_weights.sort_values("topic_1", ascending=False))
+        #    st.write(df_weights.sort_values("topic_1", ascending=False))
         #with col3: 
-            #st.write(df_weights.sort_values("topic_2", ascending=False))
+        #    st.write(df_weights.sort_values("topic_2", ascending=False))
+        keywords = []
+        
+        for keyword in df_weights.sort_values("topic_0", ascending=False).iloc[0:2].index:
+            keywords.append(keyword)
+        for keyword in df_weights.sort_values("topic_1", ascending=False).iloc[0:2].index:
+            keywords.append(keyword)   
+        for keyword in df_weights.sort_values("topic_2", ascending=False).iloc[0:2].index:
+            keywords.append(keyword)
 
         #st.header("Top comments")
         threshold = 1.3*course_comments["score"].mean()
         top_comments = course_comments[course_comments["score"]>=threshold].sort_values("score", ascending=False)
         #st.write(top_comments)
 
-    return top_comments[:10]
+    return top_comments[:10], keywords
 
 def getauthorcourses(author):  #
     return courses[courses['instructor_url'] == author]

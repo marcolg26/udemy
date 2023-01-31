@@ -162,7 +162,7 @@ else:
         alt.Y(plot_select, axis=alt.Axis(titleAnchor="start",
               titleAngle=0, titleY=-15, titleAlign="center")),
         color=alt.Color('Type', scale=alt.Scale(
-            domain=["Last update", "Pubblication"], range=["gold", "violet"])),
+            domain=["Last update", "Pubblication"], range=["gold", "#b27eff"])),
         shape=alt.Shape("Type:N", scale=alt.Scale(
             domain=["Last update", "Pubblication"], range=["cross", "circle"])),
         tooltip=[plot_select, "Date:T", "Course:N"]

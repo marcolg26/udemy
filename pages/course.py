@@ -30,11 +30,10 @@ else:
         st.header("Trend")
         comments = be.getcoursecomm(course_ID)
 
-        chart=alt.Chart(comments[comments['course_id'] == course_ID]).mark_line().encode(
-            x='year(date):T',
-            y='count()')
-        chart.encoding.x.title = 'month'
-        chart.encoding.y.title = 'new comments'
+        chart=alt.Chart(comments[comments['course_id'] == course_ID]).mark_bar().encode(
+            alt.X('yearmonth(date):T', title=None),
+            alt.Y('count()', title="N° of comments")
+        ).configure_mark(color="#b27eff")
 
         st.altair_chart(chart, use_container_width=True)
 
@@ -42,6 +41,9 @@ else:
             st.subheader("No comments :(")
         else:
             st.header("Comments")
+
+            keywords_container = st.container()
+
             col1, col2, col3 = st.columns(3)
             with col1:
                 view_option = st.selectbox("View", ["Top comments", "All comments"])
@@ -72,7 +74,17 @@ else:
 
             else:
                 with top_comments_container:
-                    top_comments = be.getcoursetopcomm(course_ID)
+                    top_comments, keywords = be.getcoursetopcomm(course_ID)
+                    
+                    if len(keywords) > 0:
+                        with keywords_container:
+                            st.caption("Keywords")
+                            keywords_html = "<div class='clip-region'>"
+                            for keyword in keywords:
+                                keywords_html = keywords_html + "<div class='boe-bubble'>" + keyword + "</div>"
+                            keywords_html = keywords_html + "</div>"
+                            st.markdown(keywords_html, True)
+
                     if len(top_comments) == 0:
                         st.write("No top comments")
                     else:
