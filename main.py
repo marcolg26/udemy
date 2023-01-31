@@ -176,5 +176,5 @@ if st.session_state.display_search_results:
 
             with col7:
                 if st.session_state.page_num < max_page_num:
-                    st.button("\>", key="next", on_click=be.set_page,
+                    st.button(">", key="next", on_click=be.set_page,
                               args=[st.session_state.page_num+1])
