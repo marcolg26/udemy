@@ -37,6 +37,7 @@ def style():
             /*border: 1px solid #5f5760;*/
             border: 0px none #262730;
             border-radius: 5px;
+            padding: 0.5em 0.5em 0.5em 0.5em;
         }
         
         div[data-testid="stImage"] > img{

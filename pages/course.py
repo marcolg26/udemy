@@ -18,7 +18,14 @@ else:
     if course.size == 0:
         st.subheader("ID not found")
     else:
-        st.title(course['title'].iloc[0])
+        col1, col2 = st.columns([1, 6])
+        with col1:
+            st.markdown("<style> img{vertical-align: middle;} </style>", True)
+            st.image(be.find_udemy_img_url(course.course_url))
+        
+        with col2:
+            st.title(course['title'].iloc[0])
+            st.subheader("Course by " + course.instructor_name.iloc[0])
 
         st.header("Trend")
         comments = be.getcoursecomm(course_ID)
@@ -56,15 +63,12 @@ else:
 
                 for index, comment in comments.iterrows():
                     with st.container():
-                        col1, col2 = st.columns([1, 8])
+                        col1, col2 = st.columns([1000, 1])
                         with col1:
-                            st.write("**"+str(comment['display_name'])+"**:")
-                            st.caption(be.draw_rating(comment['rate']), True)
-
-                        with col2:
-                            st.write(" ")
-                            st.write(" ")
+                            st.write("<div style='display:block;'><span style='font-size:1.1em;font-weight:bold;'>"+str(comment['display_name'])+"</span><span style='padding:0 0 0.2em 2em;position:relative;bottom:0.2em;'>"+be.draw_rating(comment['rate'])+ "</span></div>", unsafe_allow_html=True)
                             st.write(comment['comment'])
+                        with col2:
+                            st.empty()
 
             else:
                 with top_comments_container:
@@ -75,12 +79,9 @@ else:
                         st.subheader("Top comments ("+str(len(top_comments))+")")
                         for index, comment in top_comments.iterrows():
                             with st.container():
-                                col1, col2 = st.columns([1, 8])
+                                col1, col2 = st.columns([1000, 1])
                                 with col1:
-                                    st.write("**"+str(comment['display_name'])+"**:")
-                                    st.caption(be.draw_rating(comment['rate']), True)
-
-                                with col2:
-                                    st.write(" ")
-                                    st.write(" ")
+                                    st.write("<div style='display:block;'><span style='font-size:1.1em;font-weight:bold;'>"+str(comment['display_name'])+"</span><span style='padding:0 0 0.2em 2em;position:relative;bottom:0.2em;'>"+be.draw_rating(comment['rate'])+ "</span></div>", unsafe_allow_html=True)
                                     st.write(comment['comment'])
+                                with col2:
+                                    st.empty()
