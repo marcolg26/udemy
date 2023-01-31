@@ -79,9 +79,29 @@ else:
                     if len(keywords) > 0:
                         with keywords_container:
                             st.caption("Keywords")
-                            keywords_html = "<div class='clip-region'>"
+                            css = """
+                            <style>
+                                span.custom-bubble {
+                                    border:2px solid #666666;
+                                    border-radius:30px;
+                                    margin:0 0.5em 0 0.5em;
+                                    padding:0.25em 0.5em 0.25em 0.5em;
+                                    background-color: #262730;
+                                    font-color: #666666;
+                                }
+
+                                span.custom-bubble:hover {
+                                    border:3px solid #b27eff;
+                                    border-radius:30px;
+                                    margin:0 0.6em 0 0.6em;
+                                    padding:0.26em 0.6em 0.26em 0.6em;
+                                    background-color: #262730;
+                                    font-color: #b27eff;
+                                }
+                            </style>"""
+                            keywords_html = css + "<div style='margin-bottom:1em'>"
                             for keyword in keywords:
-                                keywords_html = keywords_html + "<div class='boe-bubble'>" + keyword + "</div>"
+                                keywords_html = keywords_html + "<span class='custom-bubble'>" + keyword + "</span>"
                             keywords_html = keywords_html + "</div>"
                             st.markdown(keywords_html, True)
 
