@@ -338,12 +338,30 @@ def getcoursetopcomm(id):  #
         #    st.write(df_weights.sort_values("topic_2", ascending=False))
         keywords = []
         
-        for keyword in df_weights.sort_values("topic_0", ascending=False).iloc[0:2].index:
-            keywords.append(keyword)
-        for keyword in df_weights.sort_values("topic_1", ascending=False).iloc[0:2].index:
-            keywords.append(keyword)   
-        for keyword in df_weights.sort_values("topic_2", ascending=False).iloc[0:2].index:
-            keywords.append(keyword)
+        n_keys = 0
+        for keyword in df_weights.sort_values("topic_0", ascending=False).index:
+            if n_keys < 3:
+                if keyword not in keywords:
+                    keywords.append(keyword)
+                    n_keys += 1
+            else:
+                break
+             
+        for keyword in df_weights.sort_values("topic_1", ascending=False).index:
+            if n_keys < 5:
+                if keyword not in keywords:
+                    keywords.append(keyword)
+                    n_keys += 1
+            else:
+                break 
+
+        for keyword in df_weights.sort_values("topic_2", ascending=False).index:
+            if n_keys < 7:
+                if keyword not in keywords:
+                    keywords.append(keyword)
+                    n_keys += 1
+            else:
+                break
 
         #st.header("Top comments")
         threshold = 1.3*course_comments["score"].mean()

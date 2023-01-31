@@ -87,7 +87,7 @@ else:
                                     margin:0 0.5em 0 0.5em;
                                     padding:0.25em 0.5em 0.25em 0.5em;
                                     background-color: #262730;
-                                    font-color: #666666;
+                                    color: #666666;
                                 }
 
                                 span.custom-bubble:hover {
@@ -96,7 +96,7 @@ else:
                                     margin:0 0.6em 0 0.6em;
                                     padding:0.26em 0.6em 0.26em 0.6em;
                                     background-color: #262730;
-                                    font-color: #b27eff;
+                                    color: #b27eff;
                                 }
                             </style>"""
                             keywords_html = css + "<div style='margin-bottom:1em'>"
