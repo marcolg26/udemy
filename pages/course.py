@@ -35,18 +35,17 @@ else:
             st.subheader("No comments :(")
         else:
             st.header("Comments")
-            top_comments = be.getcoursetopcomm(course_ID)
-            if len(top_comments) == 0:
-                st.write("No top comments")
-            else:
-                st.subheader("Top comments ("+str(len(top_comments))+")")
-                for index, comment in top_comments.iterrows():
-                    st.write(str(comment['display_name'])+":")
-                    st.caption(be.draw_rating(comment['rate']), True)
-                    st.write(comment['comment'])
-            
-            if st.button("View all comments"):
-                comments_order = st.selectbox("Order comments by", ["Publishing date", "Rating (ascending)", "Rating (descending)"])
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                view_option = st.selectbox("View", ["Top comments", "All comments"])
+            top_comments_container = st.container()
+            with col2:
+                comments_order_container = st.container()
+
+            if view_option == "All comments":
+                st.subheader("All comments ("+str(len(comments))+")")
+                with comments_order_container:
+                    comments_order = st.selectbox("Order comments by", ["Publishing date", "Rating (ascending)", "Rating (descending)"])
                 
                 if comments_order == "Rating (ascending)":
                     comments.sort_values(by='rate', inplace=True, ascending=True)        
@@ -56,6 +55,32 @@ else:
                     comments.sort_values(by='date', inplace=True, ascending=False)
 
                 for index, comment in comments.iterrows():
-                    st.write(str(comment['display_name'])+":")
-                    st.caption(be.draw_rating(comment['rate']), True)
-                    st.write(comment['comment'])
+                    with st.container():
+                        col1, col2 = st.columns([1, 8])
+                        with col1:
+                            st.write("**"+str(comment['display_name'])+"**:")
+                            st.caption(be.draw_rating(comment['rate']), True)
+
+                        with col2:
+                            st.write(" ")
+                            st.write(" ")
+                            st.write(comment['comment'])
+
+            else:
+                with top_comments_container:
+                    top_comments = be.getcoursetopcomm(course_ID)
+                    if len(top_comments) == 0:
+                        st.write("No top comments")
+                    else:
+                        st.subheader("Top comments ("+str(len(top_comments))+")")
+                        for index, comment in top_comments.iterrows():
+                            with st.container():
+                                col1, col2 = st.columns([1, 8])
+                                with col1:
+                                    st.write("**"+str(comment['display_name'])+"**:")
+                                    st.caption(be.draw_rating(comment['rate']), True)
+
+                                with col2:
+                                    st.write(" ")
+                                    st.write(" ")
+                                    st.write(comment['comment'])
