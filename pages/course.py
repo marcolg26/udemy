@@ -44,10 +44,10 @@ else:
 
             keywords_container = st.container()
 
-            col1, col2, col3 = st.columns(3)
+            col1, col2 = st.columns(2)
             with col1:
                 view_option = st.selectbox("View", ["Top comments", "All comments"])
-            top_comments_container = st.container()
+            #top_comments_container = st.container()
             with col2:
                 comments_order_container = st.container()
 
@@ -102,17 +102,17 @@ else:
                             st.empty()
 
             else:
-                with top_comments_container:
+                #with top_comments_container:
 
-                    if len(top_comments) == 0:
-                        st.write("No top comments")
-                    else:
-                        st.subheader("Top comments ("+str(len(top_comments))+")")
-                        for index, comment in top_comments.iterrows():
-                            with st.container():
-                                col1, col2 = st.columns([1000, 1])
-                                with col1:
-                                    st.write("<div style='display:block;'><span style='font-size:1.1em;font-weight:bold;'>"+str(comment['display_name'])+"</span><span style='padding:0 0 0.2em 2em;position:relative;bottom:0.2em;'>"+be.draw_rating(comment['rate'])+ "</span></div>", unsafe_allow_html=True)
-                                    st.write(comment['comment'])
-                                with col2:
-                                    st.empty()
+                if len(top_comments) == 0:
+                    st.write("No top comments")
+                else:
+                    st.subheader("Top comments ("+str(len(top_comments))+")")
+                    for index, comment in top_comments.iterrows():
+                        with st.container():
+                            col1, col2 = st.columns([1000, 1])
+                            with col1:
+                                st.write("<div style='display:block;'><span style='font-size:1.1em;font-weight:bold;'>"+str(comment['display_name'])+"</span><span style='padding:0 0 0.2em 2em;position:relative;bottom:0.2em;'>"+be.draw_rating(comment['rate'])+ "</span></div>", unsafe_allow_html=True)
+                                st.write(comment['comment'])
+                            with col2:
+                                st.empty()

@@ -19,89 +19,117 @@ comments = pd.read_csv("comments_edited.csv")
 
 color_text_sec = "#b27eff"
 color_bg = "#EFE9F4"
-color_bg_sec = "#484D6D"
+color_bg_sec = "#A592B1"
 color_bg_alt = "#2A3439"
 color_special = "#FFD700"
 
 
 def style():
-    st.set_page_config(layout="wide")
-
+    st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
     st.markdown(f"""
     <style>
+        /*set background pattern*/
         [data-testid="stAppViewContainer"] {{
-            background-color: {color_bg};
+            background-color: #EFE9F4;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 1000'%3E%3Cg %3E%3Ccircle fill='%23FFFFFF' cx='50' cy='0' r='50'/%3E%3Cg fill='%23f9f5fa' %3E%3Ccircle cx='0' cy='50' r='50'/%3E%3Ccircle cx='100' cy='50' r='50'/%3E%3C/g%3E%3Ccircle fill='%23f3ecf6' cx='50' cy='100' r='50'/%3E%3Cg fill='%23ede2f1' %3E%3Ccircle cx='0' cy='150' r='50'/%3E%3Ccircle cx='100' cy='150' r='50'/%3E%3C/g%3E%3Ccircle fill='%23e7d9ec' cx='50' cy='200' r='50'/%3E%3Cg fill='%23e1d0e7' %3E%3Ccircle cx='0' cy='250' r='50'/%3E%3Ccircle cx='100' cy='250' r='50'/%3E%3C/g%3E%3Ccircle fill='%23dbc6e3' cx='50' cy='300' r='50'/%3E%3Cg fill='%23d4bdde' %3E%3Ccircle cx='0' cy='350' r='50'/%3E%3Ccircle cx='100' cy='350' r='50'/%3E%3C/g%3E%3Ccircle fill='%23ceb4d9' cx='50' cy='400' r='50'/%3E%3Cg fill='%23c8abd5' %3E%3Ccircle cx='0' cy='450' r='50'/%3E%3Ccircle cx='100' cy='450' r='50'/%3E%3C/g%3E%3Ccircle fill='%23c2a2d0' cx='50' cy='500' r='50'/%3E%3Cg fill='%23bc99cb' %3E%3Ccircle cx='0' cy='550' r='50'/%3E%3Ccircle cx='100' cy='550' r='50'/%3E%3C/g%3E%3Ccircle fill='%23b690c6' cx='50' cy='600' r='50'/%3E%3Cg fill='%23af87c2' %3E%3Ccircle cx='0' cy='650' r='50'/%3E%3Ccircle cx='100' cy='650' r='50'/%3E%3C/g%3E%3Ccircle fill='%23a97ebd' cx='50' cy='700' r='50'/%3E%3Cg fill='%23a375b8' %3E%3Ccircle cx='0' cy='750' r='50'/%3E%3Ccircle cx='100' cy='750' r='50'/%3E%3C/g%3E%3Ccircle fill='%239d6cb4' cx='50' cy='800' r='50'/%3E%3Cg fill='%239664af' %3E%3Ccircle cx='0' cy='850' r='50'/%3E%3Ccircle cx='100' cy='850' r='50'/%3E%3C/g%3E%3Ccircle fill='%23905baa' cx='50' cy='900' r='50'/%3E%3Cg fill='%238952a6' %3E%3Ccircle cx='0' cy='950' r='50'/%3E%3Ccircle cx='100' cy='950' r='50'/%3E%3C/g%3E%3Ccircle fill='%238349A1' cx='50' cy='1000' r='50'/%3E%3C/g%3E%3C/svg%3E");
             background-attachment: fixed;
             background-size: contain;
         }}
 
+        /*set the sidebar color*/
         section[data-testid="stSidebar"]>div:first-child{{
+            *top: -2px;
             background-color: {color_bg_alt};
         }}
 
+        /*set sidebar text color*/
         section[data-testid="stSidebar"]>div:first-child a>span{{
             color: white !important;
         }}
 
+        /*add a rounded background to the plots*/
         div[data-testid="stArrowVegaLiteChart"] {{
             padding: 1em 1em 0 1em!important;
             border-radius: 10px;
             background-color: {color_bg};
         }}
 
+        /*force the plots to be contained on their parent box*/
         canvas {{
             width: 100% !important;
             height:auto !important;
         }}
 
+        /*Set the color for the "Me" of "UdeMe" title in the main page*/
         #welcome-on-udeme>div>span>span{{
             color:{color_text_sec} !important;
         }}
 
+        /*set a rounded and blurred background to the page content for better readability*/
         section.main > div.block-container > div[style] > div {{
-            padding: 0.2em 1em 1em 1em;
+            border: 1em solid rgba(0, 0, 0, 0);
+            border-radius: 10px;
             background-color: rgba(255, 255, 155, 0.05);
             backdrop-filter: blur(10px);
+            box-sizing:content-box;
+            left: -1em;
         }}
 
+        /*hides streamlit hamburger menu button and header*/
         header[tabindex="-1"][data-testid="stHeader"] {{
             *display: none;
         }}
 
+        /*set link colors to highlighted text color*/
         a {{
             color: {color_text_sec} !important;
         }}
 
+        /*styles the st.expander widget to look like a st.selector*/
         div[data-testid="stExpander"] {{
             background-color: {color_bg_sec};
-            border: 0px none;
             border-radius: 5px;
         }}
 
-        body {{
-            color:black;
+        div.stNumberInput>div:first-of-type, div.stSelectbox>div{{
+            border: 1px solid rgba(0,0,0,0.2);
+            border-radius: 5px;
         }}
 
+        /*encompass comments and courses into a coloured rounded rectangle*/
         div[data-testid="stVerticalBlock"] > div[data-testid="stHorizontalBlock"]:only-child {{
             background-color: {color_bg_alt};
             border: 0px none;
-            border-radius: 5px;
+            border-radius: 10px;
             color:white;
             padding: 0.5em 0.5em 0.5em 0.5em;
         }}
+
+        /*fix comment and course lists layout*/
+        div[data-testid="stVerticalBlock"]:has(div[data-testid="stHorizontalBlock"]:only-child):not(section.main>div>div>div[data-testid="stVerticalBlock"]){{
+            *box-sizing:content-box;
+            width: 100%;
+        }}
         
+        /*fix comment and course lists layout*/
+        div.element-container~div[style]:has(div[data-testid='stVerticalBlock']>div[data-testid='stHorizontalBlock']:only-child) {{
+            *box-sizing:content-box;
+            width: 100% !important;
+        }}
+
+        /*set the text color of the subheader in a listed course*/
         div[data-testid="stVerticalBlock"] > div[data-testid="stHorizontalBlock"]:only-child h3{{
             color:white;
         }}
 
+        /*set the text color of the captions inside a listed course or comment*/
         div[data-testid="stVerticalBlock"] > div[data-testid="stHorizontalBlock"]:only-child div[data-testid="stCaptionContainer"]{{
             color: #bbbbbb;
         }}
 
+        /*round the borders of st.image*/
         div[data-testid="stImage"] > img {{
-            align-items: center;
-            border-radius: 5px;
+            border-radius: 8px;
         }}
     </style>
     """, True)

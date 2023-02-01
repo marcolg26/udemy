@@ -88,7 +88,7 @@ if st.session_state.display_search_results:
 
         for index, course in courses.iterrows():
             with st.container():
-                col1, col2 = st.columns(2)
+                col1, col2 = st.columns([1, 2])
                 with col1:
                     st.image(be.find_udemy_img_url(course.course_url))
                 with col2:
