@@ -64,7 +64,7 @@ else:
 
     st.header("Course ratings insight")
 
-    col1, col2, col3 = st.columns([1, 2, 0.2])
+    col1, col2 = st.columns([1, 2])
     with col1:
         st.subheader("Rating per course")
 
@@ -76,7 +76,7 @@ else:
         plot = alt.Chart(source).mark_bar().encode(
             alt.X("Average Rating", scale=alt.Scale(domain=(0, 5)), title=None),
             alt.Y("Course", title=None)
-        ).configure_mark(color="gold")
+        ).configure_mark(color=be.color_special)
 
         st.altair_chart(plot, use_container_width=True)
 
@@ -86,7 +86,7 @@ else:
             alt.X("Average Rating:Q", title=None,
                   bin=alt.Bin(extent=[0, 5], step=0.5)),
             alt.Y("count()", title=None)
-        ).configure_mark(color="gold")
+        ).configure_mark(color=be.color_special)
 
         st.altair_chart(plot, use_container_width=True)
 
@@ -110,7 +110,7 @@ else:
         plot = alt.Chart(source).mark_bar().encode(
             x=alt.X("N° interactions:Q", title=None),
             y=alt.Y("Type:N", title=None, axis=alt.Axis(labels=False)),
-            color=alt.Color('Type', scale=alt.Scale(domain=["Comments", "Reviews"], range=["#b27eff", "gold"]), legend=alt.Legend(
+            color=alt.Color('Type', scale=alt.Scale(domain=["Comments", "Reviews"], range=[be.color_text_sec, be.color_special]), legend=alt.Legend(
                 orient='top', direction='horizontal', title="Type of interaction:", titleAnchor='start')),
             row=alt.Row("Course:N", header=alt.Header(labelAlign="left", labelPadding=15,
                         labelColor="white", labelAngle=0, labelLimit=100, labelFontSize=12), spacing=10),
@@ -118,9 +118,6 @@ else:
         )
 
         st.altair_chart(plot, use_container_width=True)
-
-    with col3:
-        st.empty()
 
     st.header("Activity")
 
@@ -162,7 +159,7 @@ else:
         alt.Y(plot_select, axis=alt.Axis(titleAnchor="start",
               titleAngle=0, titleY=-15, titleAlign="center")),
         color=alt.Color('Type', scale=alt.Scale(
-            domain=["Last update", "Pubblication"], range=["gold", "#b27eff"])),
+            domain=["Last update", "Pubblication"], range=[be.color_special, be.color_text_sec])),
         shape=alt.Shape("Type:N", scale=alt.Scale(
             domain=["Last update", "Pubblication"], range=["cross", "circle"])),
         tooltip=[plot_select, "Date:T", "Course:N"]

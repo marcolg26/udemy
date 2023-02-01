@@ -4,46 +4,105 @@ import streamlit as st
 from bs4 import BeautifulSoup
 import datetime
 from dateutil.relativedelta import *
-from sklearn.decomposition import PCA #pip install -U scikit-learn
+from sklearn.decomposition import PCA  # pip install -U scikit-learn
 import string
-import nltk #pip install nltk
-from nltk.corpus import stopwords #python        import nltk         nltk.download("stopwords")
-from nltk.tokenize import word_tokenize #nltk.download("punkt")
-from nltk.stem import WordNetLemmatizer #nltk.download("wordnet")
+import nltk  # pip install nltk
+# python        import nltk         nltk.download("stopwords")
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize  # nltk.download("punkt")
+from nltk.stem import WordNetLemmatizer  # nltk.download("wordnet")
 import math
 
 
 courses = pd.read_csv("courses_edited.csv")
 comments = pd.read_csv("comments_edited.csv")
 
+color_text_sec = "#b27eff"
+color_bg = "#EFE9F4"
+color_bg_sec = "#484D6D"
+color_bg_alt = "#2A3439"
+color_special = "#FFD700"
+
 
 def style():
     st.set_page_config(layout="wide")
 
-    st.markdown("""
+    st.markdown(f"""
     <style>
-        button[title="View fullscreen"]{
-            visibility: hidden;
-        }
-            
-        a {
-            color: #b27eff !important;
-        }
+        [data-testid="stAppViewContainer"] {{
+            background-color: {color_bg};
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 1000'%3E%3Cg %3E%3Ccircle fill='%23FFFFFF' cx='50' cy='0' r='50'/%3E%3Cg fill='%23f9f5fa' %3E%3Ccircle cx='0' cy='50' r='50'/%3E%3Ccircle cx='100' cy='50' r='50'/%3E%3C/g%3E%3Ccircle fill='%23f3ecf6' cx='50' cy='100' r='50'/%3E%3Cg fill='%23ede2f1' %3E%3Ccircle cx='0' cy='150' r='50'/%3E%3Ccircle cx='100' cy='150' r='50'/%3E%3C/g%3E%3Ccircle fill='%23e7d9ec' cx='50' cy='200' r='50'/%3E%3Cg fill='%23e1d0e7' %3E%3Ccircle cx='0' cy='250' r='50'/%3E%3Ccircle cx='100' cy='250' r='50'/%3E%3C/g%3E%3Ccircle fill='%23dbc6e3' cx='50' cy='300' r='50'/%3E%3Cg fill='%23d4bdde' %3E%3Ccircle cx='0' cy='350' r='50'/%3E%3Ccircle cx='100' cy='350' r='50'/%3E%3C/g%3E%3Ccircle fill='%23ceb4d9' cx='50' cy='400' r='50'/%3E%3Cg fill='%23c8abd5' %3E%3Ccircle cx='0' cy='450' r='50'/%3E%3Ccircle cx='100' cy='450' r='50'/%3E%3C/g%3E%3Ccircle fill='%23c2a2d0' cx='50' cy='500' r='50'/%3E%3Cg fill='%23bc99cb' %3E%3Ccircle cx='0' cy='550' r='50'/%3E%3Ccircle cx='100' cy='550' r='50'/%3E%3C/g%3E%3Ccircle fill='%23b690c6' cx='50' cy='600' r='50'/%3E%3Cg fill='%23af87c2' %3E%3Ccircle cx='0' cy='650' r='50'/%3E%3Ccircle cx='100' cy='650' r='50'/%3E%3C/g%3E%3Ccircle fill='%23a97ebd' cx='50' cy='700' r='50'/%3E%3Cg fill='%23a375b8' %3E%3Ccircle cx='0' cy='750' r='50'/%3E%3Ccircle cx='100' cy='750' r='50'/%3E%3C/g%3E%3Ccircle fill='%239d6cb4' cx='50' cy='800' r='50'/%3E%3Cg fill='%239664af' %3E%3Ccircle cx='0' cy='850' r='50'/%3E%3Ccircle cx='100' cy='850' r='50'/%3E%3C/g%3E%3Ccircle fill='%23905baa' cx='50' cy='900' r='50'/%3E%3Cg fill='%238952a6' %3E%3Ccircle cx='0' cy='950' r='50'/%3E%3Ccircle cx='100' cy='950' r='50'/%3E%3C/g%3E%3Ccircle fill='%238349A1' cx='50' cy='1000' r='50'/%3E%3C/g%3E%3C/svg%3E");
+            background-attachment: fixed;
+            background-size: contain;
+        }}
 
-        div[data-testid="stExpander"], 
-        div[data-testid="stVerticalBlock"] > div[data-testid="stHorizontalBlock"]:only-child{
-            /*background-color: #262626;*/
-            background-color: #262730;
-            /*border: 1px solid #5f5760;*/
-            border: 0px none #262730;
+        section[data-testid="stSidebar"]>div:first-child{{
+            background-color: {color_bg_alt};
+        }}
+
+        section[data-testid="stSidebar"]>div:first-child a>span{{
+            color: white !important;
+        }}
+
+        div[data-testid="stArrowVegaLiteChart"] {{
+            padding: 1em 1em 0 1em!important;
+            border-radius: 10px;
+            background-color: {color_bg};
+        }}
+
+        canvas {{
+            width: 100% !important;
+            height:auto !important;
+        }}
+
+        #welcome-on-udeme>div>span>span{{
+            color:{color_text_sec} !important;
+        }}
+
+        section.main > div.block-container > div[style] > div {{
+            padding: 0.2em 1em 1em 1em;
+            background-color: rgba(255, 255, 155, 0.05);
+            backdrop-filter: blur(10px);
+        }}
+
+        header[tabindex="-1"][data-testid="stHeader"] {{
+            *display: none;
+        }}
+
+        a {{
+            color: {color_text_sec} !important;
+        }}
+
+        div[data-testid="stExpander"] {{
+            background-color: {color_bg_sec};
+            border: 0px none;
             border-radius: 5px;
+        }}
+
+        body {{
+            color:black;
+        }}
+
+        div[data-testid="stVerticalBlock"] > div[data-testid="stHorizontalBlock"]:only-child {{
+            background-color: {color_bg_alt};
+            border: 0px none;
+            border-radius: 5px;
+            color:white;
             padding: 0.5em 0.5em 0.5em 0.5em;
-        }
+        }}
         
-        div[data-testid="stImage"] > img{
+        div[data-testid="stVerticalBlock"] > div[data-testid="stHorizontalBlock"]:only-child h3{{
+            color:white;
+        }}
+
+        div[data-testid="stVerticalBlock"] > div[data-testid="stHorizontalBlock"]:only-child div[data-testid="stCaptionContainer"]{{
+            color: #bbbbbb;
+        }}
+
+        div[data-testid="stImage"] > img {{
             align-items: center;
             border-radius: 5px;
-        }
+        }}
     </style>
     """, True)
 
@@ -51,11 +110,13 @@ def style():
 
 
 def set_page(num):
-    st.session_state.page_num = num 
+    st.session_state.page_num = num
     return
+
 
 def set_display_search_results(b):
     st.session_state.display_search_results = b
+
 
 def create_selection_expander(selectionType, options):
     count = 0
@@ -77,7 +138,8 @@ def create_selection_expander(selectionType, options):
             count = count+1
             if isinstance(option, float):
                 option = "(other)"  # per evitare valori nan
-            if st.checkbox(option, key=x+str(count), on_change=set_display_search_results, args=[False]):  # chiave univoca checkbox
+            # chiave univoca checkbox
+            if st.checkbox(option, key=x+str(count), on_change=set_display_search_results, args=[False]):
                 st.session_state[selectionType].append(option)
                 if "Any " + selectionType in st.session_state[selectionType]:
                     st.session_state[selectionType].remove(
@@ -103,34 +165,37 @@ def list_to_string(selector):
 
 
 def find_udemy_img_url(url, type="course"):
-    #response = requests.get("https://www.udemy.com" + url)
-    #soup = BeautifulSoup(response.text, "html.parser")
+    # response = requests.get("https://www.udemy.com" + url)
+    # soup = BeautifulSoup(response.text, "html.parser")
 
-    #image_tags = soup.find_all("img", attrs={"srcset": True})
-    #if len(image_tags) > 0:
-        #url = [img["srcset"] for img in image_tags][0].split(", ")[-1]
+    # image_tags = soup.find_all("img", attrs={"srcset": True})
+    # if len(image_tags) > 0:
+    # url = [img["srcset"] for img in image_tags][0].split(", ")[-1]
 
-        #return url.split()[0]
-    #else:
-        if type == "course":
-            return "https://s.udemycdn.com/meta/default-meta-image-v2.png"
-        elif type == "author":
-            return "https://play-lh.googleusercontent.com/dsCkmJE2Fa8IjyXERAcwc5YeQ8_NvbZ4_OI8LgqyjILpXUfS5YhEcnAMajKPrZI-og"
+    # return url.split()[0]
+    # else:
+    if type == "course":
+        return "https://s.udemycdn.com/meta/default-meta-image-v2.png"
+    elif type == "author":
+        return "https://play-lh.googleusercontent.com/dsCkmJE2Fa8IjyXERAcwc5YeQ8_NvbZ4_OI8LgqyjILpXUfS5YhEcnAMajKPrZI-og"
 
 
 def get_courses():
 
-    if(st.session_state["topic"][0]=="Any topic"):
-        if(st.session_state["subcategory"][0]=="Any subcategory"):
-            list = courses[courses['category'].isin(st.session_state["category"])]
+    if (st.session_state["topic"][0] == "Any topic"):
+        if (st.session_state["subcategory"][0] == "Any subcategory"):
+            list = courses[courses['category'].isin(
+                st.session_state["category"])]
         else:
-            list = courses[courses['subcategory'].isin(st.session_state["subcategory"])]
+            list = courses[courses['subcategory'].isin(
+                st.session_state["subcategory"])]
 
-    else: list = courses[courses['topic'].isin(st.session_state["topic"])]
+    else:
+        list = courses[courses['topic'].isin(st.session_state["topic"])]
 
-    if(st.session_state["language"][0]!="Any language"):
+    if (st.session_state["language"][0] != "Any language"):
         list = list[list['language'].isin(st.session_state["language"])]
-        
+
     if st.session_state["free"]:
         list = list[list['price'] == 0]
     else:
@@ -175,21 +240,21 @@ def get_courses():
     elif st.session_state.order == "Publishing date":
         list.sort_values(by='published_time', inplace=True, ascending=False)
     elif st.session_state.order == "Suggested ✨":
-        list['avg_rating_round'] = list['avg_rating'].round(decimals = 1)
+        list['avg_rating_round'] = list['avg_rating'].round(decimals=1)
         list.sort_values(['avg_rating_round', 'num_comments', 'num_subscribers'],
-        ascending = [False, False, False], inplace=True)
+                         ascending=[False, False, False], inplace=True)
 
     return list
 
 
 def draw_rating(rating):
-    full_star = """<svg fill='gold' xmlns="http://www.w3.org/2000/svg" height="24" width="24">
+    full_star = f"""<svg fill='{color_special}' xmlns="http://www.w3.org/2000/svg" height="24" width="24">
     <path d="m7.85 19.1 1.55-5.125-4-2.9h5l1.6-5.3 1.6 5.3h5l-4 2.9 1.55 5.125L12 15.95Z"/>
     </svg>"""
-    half_star = """<svg fill='gold' xmlns="http://www.w3.org/2000/svg" height="24" width="24">
+    half_star = f"""<svg fill='{color_special}' xmlns="http://www.w3.org/2000/svg" height="24" width="24">
     <path d="M12 8.925v5.85l2.375 1.85-.9-3.025 2.25-1.6h-2.8ZM7.85 19.1l1.55-5.125-4-2.9h5l1.6-5.3 1.6 5.3h5l-4 2.9 1.55 5.125L12 15.95Z"/>
     </svg>"""
-    empty_star = """<svg fill='gold' xmlns="http://www.w3.org/2000/svg" height="24" width="24">
+    empty_star = f"""<svg fill='{color_special}' xmlns="http://www.w3.org/2000/svg" height="24" width="24">
     <path d="M9.625 16.625 12 14.775l2.375 1.85-.9-3.025 2.25-1.6h-2.8L12 8.925 11.075 12h-2.8l2.25 1.6ZM7.85 19.1l1.55-5.125-4-2.9h5l1.6-5.3 1.6 5.3h5l-4 2.9 1.55 5.125L12 15.95ZM12 12.775Z"/>
     </svg>"""
 
@@ -206,11 +271,11 @@ def draw_rating(rating):
 
     svg_html = (
         svg_html
-        + '</g><span style="color:gold;vertical-align:super;font-size:0.7em">('
+        + f"</g><span style='color:{color_special};vertical-align:super;font-size:0.7em'>("
         + str(rating)
         + "/5)</span>"
     )
-    
+
     return svg_html
 
 
@@ -243,6 +308,7 @@ def getcourseinfo(id):  #
 def getcoursecomm(id):  #
     return comments[comments['course_id'] == id]
 
+
 def getcoursetopcomm(id):  #
     course = getcourseinfo(id)
     course_comments = comments[comments['course_id'] == id]
@@ -254,10 +320,11 @@ def getcoursetopcomm(id):  #
         stop_words = stop_words.union(set(stopwords.words("portuguese")))
         stop_words = stop_words.union(set(stopwords.words("spanish")))
         if course["language"].iloc[0] not in ["english", "portoguese", "spanish"]:
-            stop_words = stop_words.union(set(stopwords.words(course["language"].iloc[0])))
+            stop_words = stop_words.union(
+                set(stopwords.words(course["language"].iloc[0])))
 
         lemmatizer = WordNetLemmatizer()
-        #st.write(stop_words)
+        # st.write(stop_words)
 
         tf_matrix = {}
         doc_count_matrix = {}
@@ -278,39 +345,43 @@ def getcoursetopcomm(id):  #
                         doc_count_matrix[t] += 1
                     else:
                         doc_count_matrix[t] = 1
-                            
-            tf_matrix[index] = {key: value / len(word_count) for key, value in word_count.items()}
-            #st.write(word_count)
-            #st.write(len(word_count))
 
-        idf_matrix = {key: math.log(len(course_comments) / value) for key, value in doc_count_matrix.items()}
+            tf_matrix[index] = {
+                key: value / len(word_count) for key, value in word_count.items()}
+            # st.write(word_count)
+            # st.write(len(word_count))
+
+        idf_matrix = {key: math.log(len(course_comments) / value)
+                      for key, value in doc_count_matrix.items()}
 
         tf_idf_matrix = {}
         for key, comment in tf_matrix.items():
-            tf_idf_matrix[key] = {word: tf * idf_matrix[word] for word, tf in comment.items()}
+            tf_idf_matrix[key] = {word: tf * idf_matrix[word]
+                                  for word, tf in comment.items()}
 
-        #col1, col2, col3 =st.columns(3)
-        #with col1: 
+        # col1, col2, col3 =st.columns(3)
+        # with col1:
         #    st.header("tf matrix")
         #    st.write(tf_matrix)
 
-        #with col2:
+        # with col2:
         #    st.header("Idf matrix")
         #    st.write(idf_matrix)
 
-        #with col3:
+        # with col3:
         #    st.header("Tf-Idf matrix")
         #    st.write(tf_idf_matrix)
-        
+
         course_comments["score"] = None
-        i=0
+        i = 0
         for key, comment in tf_idf_matrix.items():
-            if len(comment) > 0: 
-                course_comments["score"].iloc[i] = sum(comment.values())/len(comment)
+            if len(comment) > 0:
+                course_comments["score"].iloc[i] = sum(
+                    comment.values())/len(comment)
             i = i + 1
 
         df_tf_idf = pd.DataFrame(tf_idf_matrix).T.fillna(0)
-        #st.write(df_tf_idf)
+        # st.write(df_tf_idf)
 
         pca = PCA(n_components=3, random_state=16)
 
@@ -319,7 +390,7 @@ def getcoursetopcomm(id):  #
             columns=[f"topic_{n}" for n in range(pca.n_components_)]
         )
 
-        #st.write(df_pca)
+        # st.write(df_pca)
 
         df_weights = pd.DataFrame(
             data=pca.components_,
@@ -328,16 +399,16 @@ def getcoursetopcomm(id):  #
         )
 
         df_weights = df_weights.T
-        #st.write(df_weights)
-        #col1, col2, col3 = st.columns(3)
-        #with col1: 
+        # st.write(df_weights)
+        # col1, col2, col3 = st.columns(3)
+        # with col1:
         #    st.write(df_weights.sort_values("topic_0", ascending=False))
-        #with col2: 
+        # with col2:
         #    st.write(df_weights.sort_values("topic_1", ascending=False))
-        #with col3: 
+        # with col3:
         #    st.write(df_weights.sort_values("topic_2", ascending=False))
         keywords = []
-        
+
         n_keys = 0
         for keyword in df_weights.sort_values("topic_0", ascending=False).index:
             if n_keys < 3:
@@ -346,14 +417,14 @@ def getcoursetopcomm(id):  #
                     n_keys += 1
             else:
                 break
-             
+
         for keyword in df_weights.sort_values("topic_1", ascending=False).index:
             if n_keys < 5:
                 if keyword not in keywords:
                     keywords.append(keyword)
                     n_keys += 1
             else:
-                break 
+                break
 
         for keyword in df_weights.sort_values("topic_2", ascending=False).index:
             if n_keys < 7:
@@ -363,21 +434,26 @@ def getcoursetopcomm(id):  #
             else:
                 break
 
-        #st.header("Top comments")
+        # st.header("Top comments")
         threshold = 1.3*course_comments["score"].mean()
-        top_comments = course_comments[course_comments["score"]>=threshold].sort_values("score", ascending=False)
-        #st.write(top_comments)
+        top_comments = course_comments[course_comments["score"] >= threshold].sort_values(
+            "score", ascending=False)
+        # st.write(top_comments)
 
     return top_comments[:10], keywords
+
 
 def getauthorcourses(author):  #
     return courses[courses['instructor_url'] == author]
 
+
 def coursesdb():  #
     return courses
 
+
 def commentsdb():  #
     return comments
+
 
 def counts():  #
     return len(courses), len(comments), len(courses["instructor_name"].unique())

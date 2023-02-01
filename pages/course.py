@@ -33,7 +33,7 @@ else:
         chart=alt.Chart(comments[comments['course_id'] == course_ID]).mark_bar().encode(
             alt.X('yearmonth(date):T', title=None),
             alt.Y('count()', title="N° of comments")
-        ).configure_mark(color="#b27eff")
+        ).configure_mark(color=be.color_text_sec)
 
         st.altair_chart(chart, use_container_width=True)
 
@@ -56,25 +56,23 @@ else:
             if len(keywords) > 0:
                 with keywords_container:
                     st.caption("Keywords")
-                    css = """
+                    css = f"""
                     <style>
-                        span.custom-bubble {
+                        span.custom-bubble {{
                             border:2px solid #666666;
                             border-radius:30px;
                             margin:0 0.5em 0 0.5em;
                             padding:0.25em 0.5em 0.25em 0.5em;
-                            background-color: #262730;
+                            background-color: {be.color_bg_sec};
                             color: #666666;
-                        }
+                        }}
 
-                        span.custom-bubble:hover {
-                            border:3px solid #b27eff;
-                            border-radius:30px;
+                        span.custom-bubble:hover {{
+                            border:3px solid {be.color_text_sec};
                             margin:0 0.6em 0 0.6em;
                             padding:0.26em 0.6em 0.26em 0.6em;
-                            background-color: #262730;
-                            color: #b27eff;
-                        }
+                            color: {be.color_text_sec};
+                        }}
                     </style>"""
                     keywords_html = css + "<div style='margin-bottom:1em'>"
                     for keyword in keywords:
