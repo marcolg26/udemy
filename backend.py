@@ -140,17 +140,18 @@ def style():
             border-radius: 8px;
         }}
 
-        /*add a shadow to the stars to make them more readable*/
-        g>svg {{
-            filter: drop-shadow(0px 0px 1px rgb(0 0 0 / 0.4))
+        /*add an outline to the stars to make them more readable*/
+        g svg path {{
+            stroke: #000000;
+            stroke-width: 1px;
+            stroke-opacity: 0.5;
+            stroke-linejoin: "round";
+            paint-order: stroke;
         }}
 
         span.rating-container {{
-            border: 2px none;
-            border-radius:30px;
             margin:0 0.5em 0 0.5em;
             padding:0.25em 0.5em 0.75em 0.5em;
-            background-color: #505773;
         }}
 
         h1 a:not(.custom), h2 a:not(.custom), h3 a:not(.custom), h4 a:not(.custom), h5 a:not(.custom), h6 a:not(.custom) {{
@@ -331,13 +332,13 @@ def get_courses():
 
 
 def draw_rating(rating):
-    full_star = f"""<svg fill='{color_special}' xmlns="http://www.w3.org/2000/svg" height="24" width="24">
+    full_star = f"""<svg fill='{color_special}' xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="2 2 20 20">
     <path d="m7.85 19.1 1.55-5.125-4-2.9h5l1.6-5.3 1.6 5.3h5l-4 2.9 1.55 5.125L12 15.95Z"/>
     </svg>"""
-    half_star = f"""<svg fill='{color_special}' xmlns="http://www.w3.org/2000/svg" height="24" width="24">
+    half_star = f"""<svg fill='{color_special}' xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="2 2 20 20">
     <path d="M12 8.925v5.85l2.375 1.85-.9-3.025 2.25-1.6h-2.8ZM7.85 19.1l1.55-5.125-4-2.9h5l1.6-5.3 1.6 5.3h5l-4 2.9 1.55 5.125L12 15.95Z"/>
     </svg>"""
-    empty_star = f"""<svg fill='{color_special}' xmlns="http://www.w3.org/2000/svg" height="24" width="24">
+    empty_star = f"""<svg fill='{color_special}' xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="2 2 20 20">
     <path d="M9.625 16.625 12 14.775l2.375 1.85-.9-3.025 2.25-1.6h-2.8L12 8.925 11.075 12h-2.8l2.25 1.6ZM7.85 19.1l1.55-5.125-4-2.9h5l1.6-5.3 1.6 5.3h5l-4 2.9 1.55 5.125L12 15.95ZM12 12.775Z"/>
     </svg>"""
 
@@ -354,7 +355,7 @@ def draw_rating(rating):
 
     svg_html = (
         svg_html
-        + f"</g><span style='color:{color_special};vertical-align:super;font-size:0.7em'>("
+        + f"</g><span style='color:#000000;vertical-align:super;font-size:0.7em;opacity:0.75;'>("
         + str(rating)
         + "/5)</span></span>"
     )
