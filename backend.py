@@ -84,7 +84,7 @@ def style():
 
         /*hides streamlit hamburger menu button and header*/
         header[tabindex="-1"][data-testid="stHeader"] {{
-            display: none;
+            *display: none;
         }}
 
         /*set link colors to highlighted text color*/
@@ -151,6 +151,39 @@ def style():
             margin:0 0.5em 0 0.5em;
             padding:0.25em 0.5em 0.75em 0.5em;
             background-color: #505773;
+        }}
+
+        h1 a:not(.custom), h2 a:not(.custom), h3 a:not(.custom), h4 a:not(.custom), h5 a:not(.custom), h6 a:not(.custom) {{
+            display:none;
+        }}
+
+        /*Style custom buttons to look like streamlit buttons*/
+        button.custom-button {{
+            background-color: {color_bg};
+            border: 1px solid rgba(0,0,0,0.2);
+            padding: 0.3em 0.6em 0.3em 0.6em;
+            border-radius: 0.25rem;
+        }}
+
+        /*Style custom buttons to look like streamlit buttons*/
+        button.custom-button:hover {{
+            color: {color_text_sec};
+            border: 1px solid {color_text_sec};
+        }}
+
+        /*Style custom buttons to look like streamlit buttons*/
+        button.custom-button:focus {{
+            background-color: {color_text_sec};
+            box-shadow: 0 0 0 3px rgba(0, 45, 128, 0.25);
+            border-radius: 0.25rem;
+            background-clip: padding-box;
+            background-size:initial;
+            outline:0;
+        }}
+
+        /*Style custom buttons to look like streamlit buttons*/
+        button.custom-button:focus p {{
+            color: #ffffff !important;
         }}
 
     </style>

@@ -45,9 +45,9 @@ else:
         st.header("Average rating")
         mean_rating = round(courses["avg_rating"].mean(), 2)
 
-        rating_html = be.draw_rating(mean_rating).split("<g>")
-        rating_html = rating_html[0] + \
-            "<g transform='scale(0.1, 10)'>" + rating_html[1]
+        rating_html = be.draw_rating(mean_rating)#.split("<g>")
+        #rating_html = rating_html[0] + \
+        #    "<g transform='scale(0.1, 10)'>" + rating_html[1]
 
         # st.markdown("""
         # <style>
@@ -61,6 +61,15 @@ else:
 
         st.write("**" + str(round(courses.num_reviews.sum())) + "** total reviews and **" +
                  str(round(courses.num_comments.sum())) + "** total comments")
+    st.write(
+    f"""
+    <a href='https://www.udemy.com{instructor_url}'>
+        <button class="custom-button">
+            <div style='vertical-align:center;box-sizing:border-box'>
+                <p style='margin-bottom:0'>Visit on Udemy!</p>
+            </div>
+        </button>
+    </a>""", unsafe_allow_html=True)
 
     st.header("Course ratings insight")
 

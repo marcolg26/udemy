@@ -1,6 +1,7 @@
 import streamlit as st
 import backend as be
 import altair as alt
+import pandas as pd
 
 
 be.style()
@@ -18,14 +19,74 @@ else:
     if course.size == 0:
         st.subheader("ID not found")
     else:
-        col1, col2 = st.columns([1, 6])
+        col1, col2 = st.columns([2, 6])
         with col1:
             st.markdown("<style> img{vertical-align: middle;} </style>", True)
-            st.image(be.find_udemy_img_url(course.course_url))
+            st.image(be.find_udemy_img_url(course.course_url.iloc[0]))
 
         with col2:
             st.title(course['title'].iloc[0])
-            st.subheader("Course by " + course.instructor_name.iloc[0])
+            st.write("<h3 style='padding-top:0;margin-top:0;'>Course by <a href='/author?u=" +
+                     course.instructor_url.iloc[0] + "' target='_self' class='custom'>" + course.instructor_name.iloc[0] + "</a></h3>", unsafe_allow_html=True)
+
+            if course.price.iloc[0] != 0:
+                st.write(
+                    "<h5>Price: " + str(course.price.iloc[0]) + "$</h5>", unsafe_allow_html=True)
+            else:
+                st.write("<h5 style'color:#117323;'>Free course!</h5>",
+                         unsafe_allow_html=True)
+
+            course_duration = course.content_length_min.iloc[0]
+            if course_duration >= 120:
+                st.write("<h6>" + str(round(course.num_lectures.iloc[0])) + " lectures (" + str(round(course_duration//60)) + " hours " + (str(round(
+                    course_duration % 60)) if course_duration % 60 >= 10 else "0" + str(round(course_duration % 60))) + " minutes)</h6>", unsafe_allow_html=True)
+            else:
+                st.write("<h6>" + str(round(course.num_lectures.iloc[0])) + " lectures (" + str(
+                    round(course_duration)) + " minutes)</h6>", unsafe_allow_html=True)
+            st.write(
+                f"""
+                <a href='https://www.udemy.com{course.course_url.iloc[0]}'>
+                    <button class="custom-button">
+                        <div style='vertical-align:center;box-sizing:border-box'>
+                            <p style='margin-bottom:0'>Visit on Udemy!</p>
+                        </div>
+                    </button>
+                </a>""", unsafe_allow_html=True)
+
+        st.write(
+            "<hr size=2><h5 style='margin-top:1em;'>" + course.headline.iloc[0] + "</h5>", unsafe_allow_html=True)
+
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.subheader("Published")
+            st.write("<h5>" + str(pd.to_datetime(
+                course['published_time'].iloc[0]).date()) + "</h5>", unsafe_allow_html=True)
+
+        with col2:
+            st.subheader("Last update")
+            if course.last_update_date.iloc[0] is not None:
+                st.write(
+                    "<h5>" + course.last_update_date.iloc[0] + "</h5>", unsafe_allow_html=True)
+            else:
+                st.write("<h5 style='color:#444444'>-</h5>",
+                         unsafe_allow_html=True)
+
+        with col3:
+            st.subheader("Average rating")
+
+            rating_html = be.draw_rating(course.avg_rating.iloc[0])
+
+            st.markdown(rating_html, True)
+
+            st.write(
+                "<h6>" + str(round(course.num_reviews.iloc[0])) + " total reviews </h6>", unsafe_allow_html=True)
+            st.write(
+                "<h6>" + str(round(course.num_comments.iloc[0])) + " total comments</h6>", unsafe_allow_html=True)
+
+        with col4:
+            st.subheader("Subscribers")
+            st.write(
+                "<h5>" + str(round(course.num_subscribers.iloc[0])) + " total reviews </h5>", unsafe_allow_html=True)
 
         st.header("Trend")
         comments = be.getcoursecomm(course_ID)
@@ -65,7 +126,7 @@ else:
                         span.custom-bubble {{
                             border:2px solid #666666;
                             border-radius:30px;
-                            margin:0 0.5em 0 0.5em;
+                            margin:0.1em 0.5em 0.1em 0.5em;
                             padding:0.25em 0.5em 0.25em 0.5em;
                             background-color: {be.color_bg_sec};
                             color: #666666;
@@ -73,7 +134,7 @@ else:
 
                         span.custom-bubble:hover {{
                             border:3px solid {be.color_text_sec};
-                            margin:0 0.6em 0 0.6em;
+                            margin:0 0.4em 0 0.4em;
                             padding:0.26em 0.6em 0.26em 0.6em;
                             color: {be.color_text_sec};
                         }}

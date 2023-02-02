@@ -97,6 +97,7 @@ if st.session_state.display_search_results:
                     instructor_name = "<a href=\"/author?u=" + course.instructor_url + \
                         "\" target=\"_self\">" + course.instructor_name + "</a>"
                     st.caption("Course by " + instructor_name, True)
+                    st.caption("Published: " + str(pd.to_datetime(course['published_time']).date()) + ("" if course.last_update_date is None else ("; Last update: " + course.last_update_date)))
 
                     st.caption(str(round(course.num_subscribers)) +
                                " people subscribed to this course")
@@ -155,7 +156,8 @@ if st.session_state.display_search_results:
 
             with col2:
                 if st.session_state.main_page_num > 1:
-                    st.button("1", key="first", on_click=be.set_page, args=["main", 1])
+                    st.button("1", key="first",
+                              on_click=be.set_page, args=["main", 1])
 
             with col3:
                 if st.session_state.main_page_num > 2:
