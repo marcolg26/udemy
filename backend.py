@@ -159,8 +159,8 @@ def style():
     return
 
 
-def set_page(num):
-    st.session_state.page_num = num
+def set_page(page, num):
+    st.session_state[page + "_page_num"] = num
     return
 
 

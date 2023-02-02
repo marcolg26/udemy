@@ -76,15 +76,15 @@ if st.session_state.display_search_results:
         courses_num = len(courses)
         st.header("Top results ("+str(courses_num)+")")
 
-        if "page_num" not in st.session_state:
-            st.session_state.page_num = 1
+        if "main_page_num" not in st.session_state:
+            st.session_state.main_page_num = 1
 
         page_limit = 10
-        if st.session_state.page_num*page_limit > courses_num:
-            courses = courses[(st.session_state.page_num-1)*page_limit:]
+        if st.session_state.main_page_num*page_limit > courses_num:
+            courses = courses[(st.session_state.main_page_num-1)*page_limit:]
         else:
-            courses = courses[(st.session_state.page_num-1)
-                              * page_limit:st.session_state.page_num*page_limit]
+            courses = courses[(st.session_state.main_page_num-1)
+                              * page_limit:st.session_state.main_page_num*page_limit]
 
         for index, course in courses.iterrows():
             with st.container():
@@ -149,32 +149,32 @@ if st.session_state.display_search_results:
             col1, col2, col3, col4, col5, col6, col7 = st.columns(
                 7, gap="small")
             with col1:
-                if st.session_state.page_num > 1:
+                if st.session_state.main_page_num > 1:
                     st.button("<", key="previous", on_click=be.set_page,
-                              args=[st.session_state.page_num-1])
+                              args=["main", st.session_state.main_page_num-1])
 
             with col2:
-                if st.session_state.page_num > 1:
-                    st.button("1", key="first", on_click=be.set_page, args=[1])
+                if st.session_state.main_page_num > 1:
+                    st.button("1", key="first", on_click=be.set_page, args=["main", 1])
 
             with col3:
-                if st.session_state.page_num > 2:
+                if st.session_state.main_page_num > 2:
                     st.write("...")
 
             with col4:
-                st.button(str(st.session_state.page_num),
+                st.button(str(st.session_state.main_page_num),
                           key="current", disabled=True)
 
             with col5:
-                if st.session_state.page_num < max_page_num - 1:
+                if st.session_state.main_page_num < max_page_num - 1:
                     st.write("...")
 
             with col6:
-                if st.session_state.page_num < max_page_num:
+                if st.session_state.main_page_num < max_page_num:
                     st.button(str(max_page_num), key="last",
-                              on_click=be.set_page, args=[max_page_num])
+                              on_click=be.set_page, args=["main", max_page_num])
 
             with col7:
-                if st.session_state.page_num < max_page_num:
+                if st.session_state.main_page_num < max_page_num:
                     st.button("\>", key="next", on_click=be.set_page,
-                              args=[st.session_state.page_num+1])
+                              args=["main", st.session_state.main_page_num+1])
