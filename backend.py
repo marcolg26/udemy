@@ -17,12 +17,19 @@ import math
 courses = pd.read_csv("courses_edited.csv")
 comments = pd.read_csv("comments_edited.csv")
 
-color_text_sec = "#b27eff"
-color_bg = "#EFE9F4"
-color_bg_sec = "#A592B1"
-color_bg_alt = "#2A3439"
-color_special = "#FFD700"
+color_text_sec = "#002D80"
 
+color_bg = "#C4C3C2"
+color_bg_sec = "#9DA4B3"
+
+color_special = "#FF9100"
+
+color_bg_alt = "#C4C3C2"
+color_text_alt = "black"
+color_text_alt_captions = "#333333"
+
+color_sidebar ="#7E1F86"
+color_sidebar_text = "white"
 
 def style():
     st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
@@ -30,21 +37,21 @@ def style():
     <style>
         /*set background pattern*/
         [data-testid="stAppViewContainer"] {{
-            background-color: #EFE9F4;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 1000'%3E%3Cg %3E%3Ccircle fill='%23FFFFFF' cx='50' cy='0' r='50'/%3E%3Cg fill='%23f9f5fa' %3E%3Ccircle cx='0' cy='50' r='50'/%3E%3Ccircle cx='100' cy='50' r='50'/%3E%3C/g%3E%3Ccircle fill='%23f3ecf6' cx='50' cy='100' r='50'/%3E%3Cg fill='%23ede2f1' %3E%3Ccircle cx='0' cy='150' r='50'/%3E%3Ccircle cx='100' cy='150' r='50'/%3E%3C/g%3E%3Ccircle fill='%23e7d9ec' cx='50' cy='200' r='50'/%3E%3Cg fill='%23e1d0e7' %3E%3Ccircle cx='0' cy='250' r='50'/%3E%3Ccircle cx='100' cy='250' r='50'/%3E%3C/g%3E%3Ccircle fill='%23dbc6e3' cx='50' cy='300' r='50'/%3E%3Cg fill='%23d4bdde' %3E%3Ccircle cx='0' cy='350' r='50'/%3E%3Ccircle cx='100' cy='350' r='50'/%3E%3C/g%3E%3Ccircle fill='%23ceb4d9' cx='50' cy='400' r='50'/%3E%3Cg fill='%23c8abd5' %3E%3Ccircle cx='0' cy='450' r='50'/%3E%3Ccircle cx='100' cy='450' r='50'/%3E%3C/g%3E%3Ccircle fill='%23c2a2d0' cx='50' cy='500' r='50'/%3E%3Cg fill='%23bc99cb' %3E%3Ccircle cx='0' cy='550' r='50'/%3E%3Ccircle cx='100' cy='550' r='50'/%3E%3C/g%3E%3Ccircle fill='%23b690c6' cx='50' cy='600' r='50'/%3E%3Cg fill='%23af87c2' %3E%3Ccircle cx='0' cy='650' r='50'/%3E%3Ccircle cx='100' cy='650' r='50'/%3E%3C/g%3E%3Ccircle fill='%23a97ebd' cx='50' cy='700' r='50'/%3E%3Cg fill='%23a375b8' %3E%3Ccircle cx='0' cy='750' r='50'/%3E%3Ccircle cx='100' cy='750' r='50'/%3E%3C/g%3E%3Ccircle fill='%239d6cb4' cx='50' cy='800' r='50'/%3E%3Cg fill='%239664af' %3E%3Ccircle cx='0' cy='850' r='50'/%3E%3Ccircle cx='100' cy='850' r='50'/%3E%3C/g%3E%3Ccircle fill='%23905baa' cx='50' cy='900' r='50'/%3E%3Cg fill='%238952a6' %3E%3Ccircle cx='0' cy='950' r='50'/%3E%3Ccircle cx='100' cy='950' r='50'/%3E%3C/g%3E%3Ccircle fill='%238349A1' cx='50' cy='1000' r='50'/%3E%3C/g%3E%3C/svg%3E");
+            background-color: #FFFFFF;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 1000'%3E%3Cg %3E%3Ccircle fill='%23FFFFFF' cx='50' cy='0' r='50'/%3E%3Cg fill='%23faf9fa' %3E%3Ccircle cx='0' cy='50' r='50'/%3E%3Ccircle cx='100' cy='50' r='50'/%3E%3C/g%3E%3Ccircle fill='%23f4f3f5' cx='50' cy='100' r='50'/%3E%3Cg fill='%23efecf0' %3E%3Ccircle cx='0' cy='150' r='50'/%3E%3Ccircle cx='100' cy='150' r='50'/%3E%3C/g%3E%3Ccircle fill='%23eae6eb' cx='50' cy='200' r='50'/%3E%3Cg fill='%23e4e0e6' %3E%3Ccircle cx='0' cy='250' r='50'/%3E%3Ccircle cx='100' cy='250' r='50'/%3E%3C/g%3E%3Ccircle fill='%23dfdae1' cx='50' cy='300' r='50'/%3E%3Cg fill='%23dad4dd' %3E%3Ccircle cx='0' cy='350' r='50'/%3E%3Ccircle cx='100' cy='350' r='50'/%3E%3C/g%3E%3Ccircle fill='%23d4ced8' cx='50' cy='400' r='50'/%3E%3Cg fill='%23cfc8d3' %3E%3Ccircle cx='0' cy='450' r='50'/%3E%3Ccircle cx='100' cy='450' r='50'/%3E%3C/g%3E%3Ccircle fill='%23cac2ce' cx='50' cy='500' r='50'/%3E%3Cg fill='%23c5bcc9' %3E%3Ccircle cx='0' cy='550' r='50'/%3E%3Ccircle cx='100' cy='550' r='50'/%3E%3C/g%3E%3Ccircle fill='%23c0b6c4' cx='50' cy='600' r='50'/%3E%3Cg fill='%23bab0c0' %3E%3Ccircle cx='0' cy='650' r='50'/%3E%3Ccircle cx='100' cy='650' r='50'/%3E%3C/g%3E%3Ccircle fill='%23b5aabb' cx='50' cy='700' r='50'/%3E%3Cg fill='%23b0a4b6' %3E%3Ccircle cx='0' cy='750' r='50'/%3E%3Ccircle cx='100' cy='750' r='50'/%3E%3C/g%3E%3Ccircle fill='%23ab9fb2' cx='50' cy='800' r='50'/%3E%3Cg fill='%23a699ad' %3E%3Ccircle cx='0' cy='850' r='50'/%3E%3Ccircle cx='100' cy='850' r='50'/%3E%3C/g%3E%3Ccircle fill='%23a193a8' cx='50' cy='900' r='50'/%3E%3Cg fill='%239c8ea4' %3E%3Ccircle cx='0' cy='950' r='50'/%3E%3Ccircle cx='100' cy='950' r='50'/%3E%3C/g%3E%3Ccircle fill='%2397889F' cx='50' cy='1000' r='50'/%3E%3C/g%3E%3C/svg%3E");
             background-attachment: fixed;
             background-size: contain;
         }}
 
         /*set the sidebar color*/
         section[data-testid="stSidebar"]>div:first-child{{
-            *top: -2px;
+            top: -2px;
             background-color: {color_bg_alt};
         }}
 
         /*set sidebar text color*/
         section[data-testid="stSidebar"]>div:first-child a>span{{
-            color: white !important;
+            color: {color_text_alt} !important;
         }}
 
         /*add a rounded background to the plots*/
@@ -62,14 +69,14 @@ def style():
 
         /*Set the color for the "Me" of "UdeMe" title in the main page*/
         #welcome-on-udeme>div>span>span{{
-            color:{color_text_sec} !important;
+            color: #a435f0 !important;
         }}
 
         /*set a rounded and blurred background to the page content for better readability*/
         section.main > div.block-container > div[style] > div {{
             border: 1em solid rgba(0, 0, 0, 0);
             border-radius: 10px;
-            background-color: rgba(255, 255, 155, 0.05);
+            background-color: rgba(255, 255, 155, 0.07);
             backdrop-filter: blur(10px);
             box-sizing:content-box;
             left: -1em;
@@ -77,7 +84,7 @@ def style():
 
         /*hides streamlit hamburger menu button and header*/
         header[tabindex="-1"][data-testid="stHeader"] {{
-            *display: none;
+            display: none;
         }}
 
         /*set link colors to highlighted text color*/
@@ -85,12 +92,13 @@ def style():
             color: {color_text_sec} !important;
         }}
 
-        /*styles the st.expander widget to look like a st.selector*/
+        /*style the st.expander widget to look like a st.selector*/
         div[data-testid="stExpander"] {{
             background-color: {color_bg_sec};
             border-radius: 5px;
         }}
 
+        /*style the widgets to make them look alike*/
         div.stNumberInput>div:first-of-type, div.stSelectbox>div{{
             border: 1px solid rgba(0,0,0,0.2);
             border-radius: 5px;
@@ -101,7 +109,7 @@ def style():
             background-color: {color_bg_alt};
             border: 0px none;
             border-radius: 10px;
-            color:white;
+            color: {color_text_alt};
             padding: 0.5em 0.5em 0.5em 0.5em;
         }}
 
@@ -119,18 +127,32 @@ def style():
 
         /*set the text color of the subheader in a listed course*/
         div[data-testid="stVerticalBlock"] > div[data-testid="stHorizontalBlock"]:only-child h3{{
-            color:white;
+            color:{color_text_alt};
         }}
 
         /*set the text color of the captions inside a listed course or comment*/
         div[data-testid="stVerticalBlock"] > div[data-testid="stHorizontalBlock"]:only-child div[data-testid="stCaptionContainer"]{{
-            color: #bbbbbb;
+            color: {color_text_alt_captions};
         }}
 
         /*round the borders of st.image*/
         div[data-testid="stImage"] > img {{
             border-radius: 8px;
         }}
+
+        /*add a shadow to the stars to make them more readable*/
+        g>svg {{
+            filter: drop-shadow(0px 0px 1px rgb(0 0 0 / 0.4))
+        }}
+
+        span.rating-container {{
+            border: 2px none;
+            border-radius:30px;
+            margin:0 0.5em 0 0.5em;
+            padding:0.25em 0.5em 0.75em 0.5em;
+            background-color: #505773;
+        }}
+
     </style>
     """, True)
 
@@ -286,7 +308,7 @@ def draw_rating(rating):
     <path d="M9.625 16.625 12 14.775l2.375 1.85-.9-3.025 2.25-1.6h-2.8L12 8.925 11.075 12h-2.8l2.25 1.6ZM7.85 19.1l1.55-5.125-4-2.9h5l1.6-5.3 1.6 5.3h5l-4 2.9 1.55 5.125L12 15.95ZM12 12.775Z"/>
     </svg>"""
 
-    svg_html = "<g>"
+    svg_html = "<span class='rating-container'><g>"
 
     for i in range(1, 6):
         diff = rating - i
@@ -301,7 +323,7 @@ def draw_rating(rating):
         svg_html
         + f"</g><span style='color:{color_special};vertical-align:super;font-size:0.7em'>("
         + str(rating)
-        + "/5)</span>"
+        + "/5)</span></span>"
     )
 
     return svg_html
