@@ -18,6 +18,10 @@ import os
 courses = pd.read_csv("courses_edited.csv")
 comments = pd.read_csv("comments_edited.csv")
 
+nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download('wordnet')
+
 color_text_sec = "#002D80"
 
 color_bg = "#C4C3C2"
@@ -395,10 +399,6 @@ def getcoursecomm(id):
 
 
 def getcoursetopcomm(id):
-
-    nltk.download("stopwords")
-    nltk.download("punkt")
-    nltk.download("wordnet")
 
     course = getcourseinfo(id)
     course_comments = comments[comments['course_id'] == id]
