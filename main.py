@@ -48,7 +48,7 @@ with col2:
 col1, col2 = st.columns(2)
 with col1:
     st.session_state.order = st.selectbox(
-        "Order results by", ["Rating", "Publishing date", "Subscriptions", "Suggested ✨"])
+        "Order results by", ["Suggested ✨", "Rating", "Subscriptions", "Publishing date"])
 
 with col2:
     order_period = st.empty()
