@@ -17,14 +17,17 @@ else:
 
     col1, col2 = st.columns([1, 6])
     with col1:
-        st.markdown("""
+        st.markdown(f"""
         <style>
-            img:first-of-type {
-                border-radius: 50% !important;
-            }
+            img.custom-image {{
+                border-radius: 50%!important;
+            }}
         </style>
+        <div date-testid="stImage" class="custom-image">
+            <img src="{be.find_udemy_img_url(instructor_url, "author")}" alt="0" style="max-width: 100%;">
+        </div>
         """, True)
-        st.image(be.find_udemy_img_url(instructor_url, "author"))
+        #st.image(be.find_udemy_img_url(instructor_url, "author"))
 
     with col2:
         st.title(courses['instructor_name'].iloc[0])
@@ -62,14 +65,14 @@ else:
         st.write("**" + str(round(courses.num_reviews.sum())) + "** total reviews and **" +
                  str(round(courses.num_comments.sum())) + "** total comments")
     st.write(
-    f"""
-    <a href='https://www.udemy.com{instructor_url}'>
-        <button class="custom-button">
-            <div style='vertical-align:center;box-sizing:border-box'>
-                <p style='margin-bottom:0'>Visit on Udemy!</p>
-            </div>
-        </button>
-    </a>""", unsafe_allow_html=True)
+        f"""
+            <a href='https://www.udemy.com{instructor_url["u"][0]}'>
+                <button class="custom-button">
+                    <div style='vertical-align:center;box-sizing:border-box'>
+                        <p style='margin-bottom:0'>Visit on Udemy!</p>
+                    </div>
+                </button>
+            </a>""", unsafe_allow_html=True)
 
     st.header("Course ratings insight")
 
@@ -175,3 +178,124 @@ else:
     )
 
     st.altair_chart(line + points, use_container_width=True)
+
+    st.header("Courses from this instructor")
+
+    if (courses.size == 0):
+        st.header("No results :(")
+    else:
+        courses_num = len(courses)
+
+        if "author_page_num" not in st.session_state:
+            st.session_state.author_page_num = 1
+
+        page_limit = 10
+        if st.session_state.author_page_num*page_limit > courses_num:
+            courses = courses[(st.session_state.author_page_num-1)*page_limit:]
+        else:
+            courses = courses[(st.session_state.author_page_num-1)
+                              * page_limit:st.session_state.author_page_num*page_limit]
+
+        for index, course in courses.iterrows():
+            with st.container():
+                col1, col2 = st.columns([1, 2])
+                with col1:
+                    st.image(be.find_udemy_img_url(course.course_url))
+                with col2:
+                    st.subheader(course.title)
+
+                    instructor_name = "<a href=\"/author?u=" + course.instructor_url + \
+                        "\" target=\"_self\">" + course.instructor_name + "</a>"
+                    st.caption("Course by " + instructor_name, True)
+                    st.caption("Published: " + str(pd.to_datetime(course['published_time']).date()) + ("" if course.last_update_date is None else ("; Last update: " + course.last_update_date)))
+
+                    st.caption(str(round(course.num_subscribers)) +
+                               " people subscribed to this course")
+                    st.caption(be.draw_rating(course.avg_rating), True)
+
+                    # comm = "<a href=\"/course?u=" + str(round(course.id)) + "\" target=\"_self\"> comments</a>"
+
+                    # st.caption("<span>" + str(round(course.num_reviews)) + " reviews and " + str(round(course.num_comments)) + comm + "</span>", True)
+
+                    st.caption("<span>" + str(round(course.num_reviews)) + " reviews and " +
+                               str(round(course.num_comments)) + " comments</span>", True)
+
+                    if course.price != 0:
+                        st.caption("Price: **" + str(course.price) + "**$")
+                    else:
+                        st.caption(":green[Free course!]")
+
+                    if course.content_length_min >= 120:
+                        st.caption("Duration: " + str(round(course.content_length_min//60)) + ":" + (str(round(course.content_length_min % 60)) if course.content_length_min %
+                                   60 >= 10 else "0" + str(round(course.content_length_min % 60))) + " hours (" + str(round(course.num_lectures)) + " lectures)")
+                    else:
+                        st.caption("Duration: " + str(round(course.content_length_min)) +
+                                   " minutes (" + str(round(course.num_lectures)) + " lectures)")
+
+                    st.write(course.headline)
+
+                    #st.markdown("<a href=\"/course?cid=" + str(round(course.id)
+                    #                                           ) + "\" target=\"_self\">View more</a>", True)
+                    st.write(
+                        f"""
+                        <a href='/course?cid={str(round(course.id))}' target='_self'>
+                            <button class="custom-button" style="margin-bottom:1em;">
+                                <div style='vertical-align:center;box-sizing:content-box'>
+                                    <p style='margin-bottom:0'>View more</p>
+                                </div>
+                            </button>
+                        </a>""", unsafe_allow_html=True)
+
+        with st.container():
+            st.markdown("""
+                <style>
+                    section.main>div.block-container>div[style]>div>div[style]:last-of-type>div {
+                        width: 28em !important;
+                        align: center !important;
+                    }
+
+                    section.main>div.block-container>div[style]>div>div[style]:last-of-type {
+                        align-items: center !important;
+                        justify-content: center !important;
+                        position: relative !important;
+                        left: 50vw !important;
+                    }
+                </style>
+            """, True)
+
+            max_page_num = int(
+                1 + courses_num/page_limit) if courses_num % page_limit != 0 else int(courses_num/page_limit)
+
+            col1, col2, col3, col4, col5, col6, col7 = st.columns(
+                7, gap="small")
+            with col1:
+                if st.session_state.author_page_num > 1:
+                    st.button("<", key="previous", on_click=be.set_page,
+                              args=["author", st.session_state.author_page_num-1])
+
+            with col2:
+                if st.session_state.author_page_num > 1:
+                    st.button("1", key="first",
+                              on_click=be.set_page, args=["author", 1])
+
+            with col3:
+                if st.session_state.author_page_num > 2:
+                    st.write("...")
+
+            with col4:
+                st.button(str(st.session_state.author_page_num),
+                          key="current", disabled=True)
+
+            with col5:
+                if st.session_state.author_page_num < max_page_num - 1:
+                    st.write("...")
+
+            with col6:
+                if st.session_state.author_page_num < max_page_num:
+                    st.button(str(max_page_num), key="last",
+                              on_click=be.set_page, args=["author", max_page_num])
+
+            with col7:
+                if st.session_state.author_page_num < max_page_num:
+                    st.button("\>", key="next", on_click=be.set_page,
+                              args=["author", st.session_state.author_page_num+1])

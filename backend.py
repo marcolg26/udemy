@@ -144,7 +144,7 @@ def style():
         /*add an outline to the stars to make them more readable*/
         g svg path {{
             stroke: #000000;
-            stroke-width: 1px;
+            stroke-width: 2px;
             stroke-opacity: 0.5;
             stroke-linejoin: "round";
             paint-order: stroke;
@@ -402,9 +402,9 @@ def getcoursetopcomm(id):
 
     course = getcourseinfo(id)
     course_comments = comments[comments['course_id'] == id]
-
-    if (course_comments.size <= 5):
-        return
+    
+    if (len(course_comments) <= 5):
+        return course_comments, []
     else:
         stop_words = set(stopwords.words("english"))
         stop_words = stop_words.union(set(stopwords.words("portuguese")))

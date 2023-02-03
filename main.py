@@ -124,8 +124,17 @@ if st.session_state.display_search_results:
 
                     st.write(course.headline)
 
-                    st.markdown("<a href=\"/course?cid=" + str(round(course.id)
-                                                               ) + "\" target=\"_self\">View more</a>", True)
+                    #st.markdown("<a href=\"/course?cid=" + str(round(course.id)
+                    #                                           ) + "\" target=\"_self\">View more</a>", True)
+                    st.write(
+                        f"""
+                        <a href='/course?cid={str(round(course.id))}' target='_self'>
+                            <button class="custom-button" style="margin-bottom:1em;">
+                                <div style='vertical-align:center;box-sizing:content-box'>
+                                    <p style='margin-bottom:0'>View more</p>
+                                </div>
+                            </button>
+                        </a>""", unsafe_allow_html=True)
 
         with st.container():
             st.markdown("""
