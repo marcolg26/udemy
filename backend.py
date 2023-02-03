@@ -364,37 +364,42 @@ def draw_rating(rating):
     return svg_html
 
 
-def languages():  #
+def languages():
     return courses["language"].unique()
 
 
-def categories():  #
+def categories():
     return courses["category"].unique()
 
 
-def subcategories():  #
+def subcategories():
     sub = courses[courses['category'].isin(st.session_state["category"])]
     return sub["subcategory"].unique()
 
 
-def topics():  #
+def topics():
     top = courses[courses['subcategory'].isin(st.session_state["subcategory"])]
     return top["topic"].unique()
 
 
-def maxprice():  #
+def maxprice():
     return round(courses["price"].max(), 0)
 
 
-def getcourseinfo(id):  #
+def getcourseinfo(id):
     return courses[courses['id'] == id]
 
 
-def getcoursecomm(id):  #
+def getcoursecomm(id):
     return comments[comments['course_id'] == id]
 
 
-def getcoursetopcomm(id):  #
+def getcoursetopcomm(id):
+
+    nltk.download("stopwords")
+    nltk.download("punkt")
+    nltk.download("wordnet")
+
     course = getcourseinfo(id)
     course_comments = comments[comments['course_id'] == id]
 
@@ -528,15 +533,15 @@ def getcoursetopcomm(id):  #
     return top_comments[:10], keywords
 
 
-def getauthorcourses(author):  #
+def getauthorcourses(author): 
     return courses[courses['instructor_url'] == author]
 
 
-def coursesdb():  #
+def coursesdb(): 
     return courses
 
 
-def commentsdb():  #
+def commentsdb(): 
     return comments
 
 
