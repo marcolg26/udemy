@@ -15,26 +15,8 @@ import math
 from pathlib import Path
 import os
 
-path1 = Path('courses_edited.csv')
-path2 = Path('comments_edited.csv')
-
-if path1.is_file(): 
-    courses = pd.read_csv("courses_edited.csv")
-else:
-    st.write("Courses file doesn't exists")
-    if st.button("Download", key=0):
-        url="https://marcolg.altervista.org/drive/courses_edited.csv"
-        courses=pd.read_csv(url)
-        courses.to_csv('courses_edited.csv')
-
-if path2.is_file(): 
-    comments = pd.read_csv("comments_edited.csv")
-else:
-    st.write("Comments file doesn't exists")
-    if st.button("Download", key=1):
-        url="https://marcolg.altervista.org/drive/comments_edited.csv"
-        comments=pd.read_csv(url)
-        comments.to_csv('comments_edited.csv')
+courses = pd.read_csv("courses_edited.csv")
+comments = pd.read_csv("comments_edited.csv")
 
 color_text_sec = "#002D80"
 
