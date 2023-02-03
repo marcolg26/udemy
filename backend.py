@@ -18,9 +18,9 @@ import os
 courses = pd.read_csv("courses_edited.csv")
 comments = pd.read_csv("comments_edited.csv")
 
-nltk.download('stopwords')
-nltk.download('punkt')
-nltk.download('wordnet')
+#nltk.download('stopwords')
+#nltk.download('punkt')
+#nltk.download('wordnet')
 
 color_text_sec = "#002D80"
 
@@ -148,7 +148,7 @@ def style():
         /*add an outline to the stars to make them more readable*/
         g svg path {{
             stroke: #000000;
-            stroke-width: 2px;
+            stroke-width: 1px;
             stroke-opacity: 0.5;
             stroke-linejoin: "round";
             paint-order: stroke;
@@ -402,9 +402,9 @@ def getcoursetopcomm(id):
 
     course = getcourseinfo(id)
     course_comments = comments[comments['course_id'] == id]
-    
-    if (len(course_comments) <= 5):
-        return course_comments, []
+
+    if (course_comments.size <= 5):
+        return
     else:
         stop_words = set(stopwords.words("english"))
         stop_words = stop_words.union(set(stopwords.words("portuguese")))
