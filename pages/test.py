@@ -6,7 +6,7 @@ import time
 
 path1 = Path('courses_edited.csv')
 path2 = Path('comments_edited.csv')
-st.header("Test csv -> loading file saved in streamlit cloud")
+st.header("Databases status")
 
 st.subheader("Courses")
 if path1.is_file(): 
@@ -19,7 +19,7 @@ if path1.is_file():
 
 else:
     st.write("Courses file doesn't exists ✗")
-    if st.button("Download"):
+    if st.button("Download", key="cour"):
         url="https://marcolg.altervista.org/drive/courses_edited.csv"
         courses=pd.read_csv(url)
         courses.to_csv('courses_edited.csv')
@@ -28,7 +28,7 @@ else:
 st.subheader("Comments")
 if path2.is_file(): 
     comments = pd.read_csv('comments_edited.csv')
-    st.write("Comments file already exists ✓")
+    st.write("Comments file already exists ✓", key="comm")
     ti_c = os.path.getctime(path2)
     c_ti = time.ctime(ti_c)
     st.write("Last modified: "+c_ti)
