@@ -396,9 +396,9 @@ def getcoursecomm(id):
 
 def getcoursetopcomm(id):
 
-    nltk.download("stopwords")
-    nltk.download("punkt")
-    nltk.download("wordnet")
+    nltk.download('stopwords')
+    nltk.download('punkt')
+    nltk.download('wordnet')
 
     course = getcourseinfo(id)
     course_comments = comments[comments['course_id'] == id]
