@@ -18,9 +18,9 @@ import os
 courses = pd.read_csv("courses_edited.csv")
 comments = pd.read_csv("comments_edited.csv")
 
-#nltk.download('stopwords')
-#nltk.download('punkt')
-#nltk.download('wordnet')
+nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download('wordnet')
 
 color_text_sec = "#002D80"
 
@@ -411,7 +411,7 @@ def getcoursetopcomm(id):
         stop_words = stop_words.union(set(stopwords.words("spanish")))
         if course["language"].iloc[0] not in ["english", "portoguese", "spanish"]:
             stop_words = stop_words.union(
-                set(stopwords.words(course["language"].iloc[0])))
+                set(stopwords.words(course["language"].iloc[0].lower())))
 
         lemmatizer = WordNetLemmatizer()
         # st.write(stop_words)
