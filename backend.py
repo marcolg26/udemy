@@ -14,6 +14,7 @@ from nltk.stem import WordNetLemmatizer  # nltk.download("wordnet")
 import math
 from pathlib import Path
 import os
+import numpy as np
 
 courses = pd.read_csv("courses_edited.csv")
 comments = pd.read_csv("comments_edited.csv")
@@ -33,8 +34,9 @@ color_bg_alt = "#C4C3C2"
 color_text_alt = "black"
 color_text_alt_captions = "#333333"
 
-color_sidebar ="#7E1F86"
+color_sidebar = "#7E1F86"
 color_sidebar_text = "white"
+
 
 def style():
     st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
@@ -273,12 +275,14 @@ def get_courses():
 
     if (st.session_state["topic"][0] == "Any topic"):
         if (st.session_state["subcategory"][0] == "Any subcategory"):
-            list = courses[courses['category'].isin(
-                st.session_state["category"])]
+            if st.session_state["category"][0] == "Any category":
+                list = courses
+            else:
+                list = courses[courses['category'].isin(
+                    st.session_state["category"])]
         else:
             list = courses[courses['subcategory'].isin(
                 st.session_state["subcategory"])]
-
     else:
         list = courses[courses['topic'].isin(st.session_state["topic"])]
 
@@ -332,6 +336,76 @@ def get_courses():
         list['avg_rating_round'] = list['avg_rating'].round(decimals=0)
         list.sort_values(['avg_rating_round', 'num_comments', 'num_subscribers'],
                          ascending=[False, False, False], inplace=True)
+    elif st.session_state.order == "PCRA":
+        if len(list) > 100:
+            list["topic"] = list["topic"].fillna("General")
+            list["points"] = (list["num_subscribers"]/list.groupby("topic")[
+                              "num_subscribers"].transform("sum"))*list.groupby("topic")["topic"].transform("count")
+            # print(list[["num_subscribers", "topic", "points"]].sort_values("points", ascending=False))
+            list = list.sort_values("points", ascending=False).iloc[0:100]
+
+            # st.write(list)
+
+        if len(list) > 0:
+            max_subs = list.num_subscribers.max()
+            max_price = list.price.max()
+            max_duration = list.content_length_min.max()
+
+            today_date = datetime.datetime.now().date()
+
+            list['published_time'] = pd.to_datetime(
+                list['published_time']).dt.date
+
+            min_pub_time = min(list["published_time"])
+            oldest_pub = -(today_date - min_pub_time).days
+
+            def vi_subs(subs): return (1/max_subs)*subs if max_subs != 0 else 0
+            def vi_rating(rating): return (1/5)*rating
+
+            def vi_price(price): return (-1/max_price) * \
+                price + 1 if max_price != 0 else 0
+
+            def vi_duration(minutes): return (1/max_duration) * \
+                minutes if max_duration != 0 else 0
+
+            def vi_publication(date): return (
+                today_date - date).days/(oldest_pub) + 1 if oldest_pub != 0 else 0
+            vi = [vi_subs, vi_rating, vi_price, vi_duration, vi_publication]
+            attributes = ["num_subscribers", "avg_rating",
+                          "price", "content_length_min", "published_time"]
+
+            def P(c1, c2, vi, attribute):
+                if attribute == "avg_rating":
+                    w = 2
+                else:
+                    w = 1
+                return 0 if vi(c1) - vi(c2) <= 0 else w
+
+            adjacency_matrix = np.zeros([len(list), len(list)], np.int8)
+            for a, attribute in enumerate(attributes):
+                for n, (i, c1) in enumerate(list.iterrows()):
+                    for m, (j, c2) in enumerate(list.iterrows()):
+                        if P(c1[attribute], c2[attribute], vi[a], attribute):
+                            adjacency_matrix[n, m] += 1
+
+            transition_matrix = np.zeros([len(list), len(list)])
+            for i, row in enumerate(adjacency_matrix):
+                for j, value in enumerate(row):
+                    transition_matrix[i, j] = value / \
+                        (sum(adjacency_matrix[:, j]))
+
+            purchase_prob = 0.15
+
+            T = (1-purchase_prob)*transition_matrix + \
+                purchase_prob*(1/5)*np.ones([len(list), len(list)])
+
+            R, r = np.linalg.eig(T)
+
+            product_centrality = r[:, R.argmax()].real
+            product_centrality = product_centrality/sum(product_centrality)
+
+            list["Visit_prob"] = product_centrality
+            list = list.sort_values("Visit_prob", ascending=False)
 
     return list
 
@@ -533,15 +607,15 @@ def getcoursetopcomm(id):
     return top_comments[:10], keywords
 
 
-def getauthorcourses(author): 
+def getauthorcourses(author):
     return courses[courses['instructor_url'] == author]
 
 
-def coursesdb(): 
+def coursesdb():
     return courses
 
 
-def commentsdb(): 
+def commentsdb():
     return comments
 
 
