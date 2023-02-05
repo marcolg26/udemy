@@ -259,5 +259,5 @@ else:
 
                 with col7:
                     if st.session_state.course_page_num < max_page_num:
-                        st.button(">", key="next", on_click=be.set_page,
+                        st.button("\>", key="next", on_click=be.set_page,
                                   args=["course", st.session_state.course_page_num+1])
