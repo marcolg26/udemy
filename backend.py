@@ -361,7 +361,7 @@ def draw_rating(rating):
     svg_html = (
         svg_html
         + f"</g><span style='color:#000000;vertical-align:super;font-size:0.7em;opacity:0.75;'>("
-        + str(rating)
+        + str(round(rating,2))
         + "/5)</span></span>"
     )
 
