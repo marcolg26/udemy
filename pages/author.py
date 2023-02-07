@@ -13,7 +13,7 @@ if len(instructor_url) == 0 or "u" not in instructor_url:
     st.title("Instructor summary")
     st.header("Couldn't find this instructor, maybe his profile has been deleted")
 else:
-    courses = be.getauthorcourses(instructor_url["u"][0])
+    courses = be.get_author_courses(instructor_url["u"][0])
 
     col1, col2 = st.columns([1, 6])
     with col1:

@@ -464,17 +464,17 @@ def maxprice():
     return round(courses["price"].max(), 0)
 
 
-def getcourseinfo(id):
+def get_course_info(id):
     return courses[courses['id'] == id]
 
 
-def getcoursecomm(id):
+def get_course_comm(id):
     return comments[comments['course_id'] == id]
 
 
-def getcoursetopcomm(id):
+def get_course_top_comm(id):
 
-    course = getcourseinfo(id)
+    course = get_course_info(id)
     course_comments = comments[comments['course_id'] == id]
 
     if (course_comments.size <= 5):
@@ -607,7 +607,7 @@ def getcoursetopcomm(id):
     return top_comments[:10], keywords
 
 
-def getauthorcourses(author):
+def get_author_courses(author):
     return courses[courses['instructor_url'] == author]
 
 

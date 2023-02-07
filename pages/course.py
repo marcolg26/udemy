@@ -14,7 +14,7 @@ if len(arg) == 0 or "cid" not in arg:
 else:
     course_ID = int(arg["cid"][0])
 
-    course = be.getcourseinfo(course_ID)
+    course = be.get_course_info(course_ID)
 
     if course.size == 0:
         st.subheader("ID not found")
@@ -89,7 +89,7 @@ else:
                 "<h5>" + str(round(course.num_subscribers.iloc[0])) + " total reviews </h5>", unsafe_allow_html=True)
 
         st.header("Trend")
-        comments = be.getcoursecomm(course_ID)
+        comments = be.get_course_comm(course_ID)
 
         chart = alt.Chart(comments[comments['course_id'] == course_ID]).mark_bar().encode(
             alt.X('yearmonth(date):T', title=None),
@@ -116,7 +116,7 @@ else:
             with col2:
                 comments_order_container = st.container()
 
-            top_comments, keywords = be.getcoursetopcomm(course_ID)
+            top_comments, keywords = be.get_course_top_comm(course_ID)
 
             if len(keywords) > 0:
                 with keywords_container:
