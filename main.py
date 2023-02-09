@@ -30,10 +30,10 @@ with col1:
 
 with col2:
     st.session_state["min"] = st.number_input(
-        "Minimum price", 0, disabled=st.session_state["free"])
+        "Minimum price ($)", 0, disabled=st.session_state["free"])
 
 with col3:
-    st.session_state["max"] = st.number_input("Maximum price", min_value=1, value=int(
+    st.session_state["max"] = st.number_input("Maximum price ($)", min_value=1, value=int(
         be.maxprice()), disabled=st.session_state["free"])
 
 col1, col2 = st.columns(2)
@@ -48,7 +48,7 @@ with col2:
 col1, col2 = st.columns(2)
 with col1:
     st.session_state.order = st.selectbox(
-        "Order results by", ["Suggested ✨", "Rating", "Subscriptions", "Publishing date", "PCRA"])
+        "Order results by", ["Suggested ✨", "PCRA", "Rating", "Subscriptions", "Publishing date"])
 
 with col2:
     order_period = st.empty()
