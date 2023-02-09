@@ -21,12 +21,12 @@ else:
     with col1:
         st.markdown(f"""
         <style>
-            img.custom-image {{
-                border-radius: 50%!important;
+            div.custom-image>img {{
+                border-radius: 50% !important;
             }}
         </style>
         <div date-testid="stImage" class="custom-image">
-            <img src="{be.find_udemy_img_url(instructor_url, "author")}" alt="0" style="max-width: 100%;">
+            <img src="{be.find_udemy_img_url(instructor_url["u"][0], "author")}" alt="0" style="max-width: 100%;">
         </div>
         """, True)
 
@@ -119,7 +119,7 @@ else:
             color=alt.Color('Type', scale=alt.Scale(domain=["Comments", "Reviews"], range=[be.color_text_sec, be.color_special]), legend=alt.Legend(
                 orient='top', direction='horizontal', title="Type of interaction:", titleAnchor='start')),
             row=alt.Row("Course:N", header=alt.Header(labelAlign="left", labelPadding=15,
-                        labelColor="white", labelAngle=0, labelLimit=100, labelFontSize=12), spacing=10),
+                        labelColor="grey", labelAngle=0, labelLimit=100, labelFontSize=12), spacing=10, title = None),
             tooltip=["N° interactions:Q", "Type:N", "Course:N"]
         )
 

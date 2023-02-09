@@ -96,7 +96,7 @@ def style():
 
         /*hides streamlit hamburger menu button and header*/
         header[tabindex="-1"][data-testid="stHeader"] {{
-            *display: none;
+            display: none;
         }}
 
         /*set link colors to highlighted text color*/
@@ -162,6 +162,7 @@ def style():
         }}
 
         span.rating-container {{
+            white-space: nowrap;
             margin:0 0.5em 0 0.5em;
             padding:0.25em 0.5em 0.75em 0.5em;
         }}
@@ -268,17 +269,18 @@ def list_to_string(selector):
 
 # request udemy web pages to extract image URLs from HTML pages
 def find_udemy_img_url(url, type="course"):
-    # response = requests.get("https://www.udemy.com" + url)
-    # soup = BeautifulSoup(response.text, "html.parser")
+    response = requests.get("https://www.udemy.com" + url)
+    soup = BeautifulSoup(response.text, "html.parser")
 
-    # image_tags = soup.find_all("img", attrs={"srcset": True})
-    # if len(image_tags) > 0:
-    # url = [img["srcset"] for img in image_tags][0].split(", ")[-1]
-
-    # return url.split()[0]
-    # else:
     if type == "course":
-        return "https://s.udemycdn.com/meta/default-meta-image-v2.png"
+        image_tags = soup.find_all("img", attrs={"srcset": True})
+        if len(image_tags) > 0:
+            url = [img["srcset"] for img in image_tags][0].split(", ")[-1]
+
+            return url.split()[0]
+        else:
+            return "https://s.udemycdn.com/meta/default-meta-image-v2.png"
+    
     elif type == "author":
         return "https://play-lh.googleusercontent.com/dsCkmJE2Fa8IjyXERAcwc5YeQ8_NvbZ4_OI8LgqyjILpXUfS5YhEcnAMajKPrZI-og"
 
