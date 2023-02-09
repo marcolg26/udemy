@@ -4,10 +4,11 @@ import altair as alt
 import pandas as pd
 
 
+# style the page
 be.style()
 
+# get the instructor url from the URL parameter
 arg = st.experimental_get_query_params()
-# st.experimental_set_query_params()
 
 if len(arg) == 0 or "cid" not in arg:
     st.header("Couldn't find this course, maybe it has been deleted")
@@ -19,6 +20,7 @@ else:
     if course.size == 0:
         st.subheader("ID not found")
     else:
+        # display course information
         col1, col2 = st.columns([2, 6])
         with col1:
             st.markdown("<style> img{vertical-align: middle;} </style>", True)
@@ -26,6 +28,7 @@ else:
 
         with col2:
             st.title(course['title'].iloc[0])
+
             st.write("<h3 style='padding-top:0;margin-top:0;'>Course by <a href='/author?u=" +
                      course.instructor_url.iloc[0] + "' target='_self' class='custom'>" + course.instructor_name.iloc[0] + "</a></h3>", unsafe_allow_html=True)
 
@@ -36,6 +39,7 @@ else:
                 st.write("<h5 style'color:#117323;'>Free course!</h5>",
                          unsafe_allow_html=True)
 
+            # represent the duration in minutes if the duration is less than 2 hours, otherwise it is converted in hours and minutes
             course_duration = course.content_length_min.iloc[0]
             if course_duration >= 120:
                 st.write("<h6>" + str(round(course.num_lectures.iloc[0])) + " lectures (" + str(round(course_duration//60)) + " hours " + (str(round(
@@ -43,6 +47,8 @@ else:
             else:
                 st.write("<h6>" + str(round(course.num_lectures.iloc[0])) + " lectures (" + str(
                     round(course_duration)) + " minutes)</h6>", unsafe_allow_html=True)
+
+            # add a custom button to visit the course page on Udemy
             st.write(
                 f"""
                 <a href='https://www.udemy.com{course.course_url.iloc[0]}'>
@@ -56,6 +62,7 @@ else:
         st.write(
             "<hr size=2><h5 style='margin-top:1em;'>" + course.headline.iloc[0] + "</h5>", unsafe_allow_html=True)
 
+        # display remaining information
         col1, col2, col3, col4 = st.columns(4)
         with col1:
             st.subheader("Published")
@@ -88,6 +95,7 @@ else:
             st.write(
                 "<h5>" + str(round(course.num_subscribers.iloc[0])) + " total reviews </h5>", unsafe_allow_html=True)
 
+        # show a simple plot that represent user activity on the course
         st.header("Trend")
         comments = be.get_course_comm(course_ID)
 
@@ -98,6 +106,7 @@ else:
 
         st.altair_chart(chart, use_container_width=True)
 
+        # display comment list
         if (comments.size == 0):
             st.subheader("No comments :(")
         else:
@@ -112,12 +121,13 @@ else:
             with col1:
                 view_option = st.selectbox(
                     "View", ["Top comments", "All comments"])
-            # top_comments_container = st.container()
+
             with col2:
                 comments_order_container = st.container()
 
             top_comments, keywords = be.get_course_top_comm(course_ID)
 
+            # display keywords
             if len(keywords) > 0:
                 with keywords_container:
                     st.caption("Keywords")
@@ -145,6 +155,7 @@ else:
                     keywords_html = keywords_html + "</div>"
                     st.markdown(keywords_html, True)
 
+            # display all comments
             if view_option == "All comments":
                 comment_num = len(comments)
                 page_limit = 15
@@ -182,8 +193,8 @@ else:
                         with col2:
                             st.empty()
 
+            # display most relevant comments
             else:
-                # with top_comments_container:
                 comment_num = len(top_comments)
                 page_limit = 15
 
@@ -208,6 +219,7 @@ else:
                             with col2:
                                 st.empty()
 
+            # adds buttons for the sub-page system and styles them
             with st.container():
                 st.markdown("""
                     <style>

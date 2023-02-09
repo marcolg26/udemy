@@ -16,13 +16,17 @@ from pathlib import Path
 import os
 import numpy as np
 
+
+# import the datasets
 courses = pd.read_csv("courses_edited.csv")
 comments = pd.read_csv("comments_edited.csv")
 
+# download the required nltk packets
 nltk.download('stopwords')
 nltk.download('punkt')
 nltk.download('wordnet')
 
+# styling variables for theming
 color_text_sec = "#002D80"
 
 color_bg = "#C4C3C2"
@@ -38,6 +42,7 @@ color_sidebar = "#7E1F86"
 color_sidebar_text = "white"
 
 
+# applies the overall style to the page
 def style():
     st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
     st.markdown(f"""
@@ -200,15 +205,18 @@ def style():
     return
 
 
+# set the sub-page number for comments and courses visualization
 def set_page(page, num):
     st.session_state[page + "_page_num"] = num
     return
 
 
+# auxialiary function for courses list on the main page
 def set_display_search_results(b):
     st.session_state.display_search_results = b
 
 
+# create streamlit section expanders and widgets to set up a custom multi selector widget
 def create_selection_expander(selectionType, options):
     count = 0
     st.session_state[selectionType] = ["Any " + selectionType]
@@ -228,8 +236,10 @@ def create_selection_expander(selectionType, options):
         for option in options:
             count = count+1
             if isinstance(option, float):
-                option = "(other)"  # per evitare valori nan
-            # chiave univoca checkbox
+                # to avoid nan values
+                option = "(other)"
+
+            # checkbox unique key
             if st.checkbox(option, key=x+str(count), on_change=set_display_search_results, args=[False]):
                 st.session_state[selectionType].append(option)
                 if "Any " + selectionType in st.session_state[selectionType]:
@@ -243,6 +253,7 @@ def create_selection_expander(selectionType, options):
         st.caption("Selection: " + list_to_string(selectionType).lower())
 
 
+# create captions for the custom multi selector
 def list_to_string(selector):
     string = ""
     if selector in st.session_state:
@@ -255,6 +266,7 @@ def list_to_string(selector):
     return string
 
 
+# request udemy web pages to extract image URLs from HTML pages
 def find_udemy_img_url(url, type="course"):
     # response = requests.get("https://www.udemy.com" + url)
     # soup = BeautifulSoup(response.text, "html.parser")
@@ -271,8 +283,9 @@ def find_udemy_img_url(url, type="course"):
         return "https://play-lh.googleusercontent.com/dsCkmJE2Fa8IjyXERAcwc5YeQ8_NvbZ4_OI8LgqyjILpXUfS5YhEcnAMajKPrZI-og"
 
 
+# returns the courses user requested courses with the order specified. User selection is handled through st.session_state.
 def get_courses():
-
+    # filter by category, subcategory and topic
     if (st.session_state["topic"][0] == "Any topic"):
         if (st.session_state["subcategory"][0] == "Any subcategory"):
             if st.session_state["category"][0] == "Any category":
@@ -286,15 +299,18 @@ def get_courses():
     else:
         list = courses[courses['topic'].isin(st.session_state["topic"])]
 
+    # filter by language
     if (st.session_state["language"][0] != "Any language"):
         list = list[list['language'].isin(st.session_state["language"])]
 
+    # filter by price
     if st.session_state["free"]:
         list = list[list['price'] == 0]
     else:
         list = list[list['price'] <= st.session_state["max"]]
     list = list[list['price'] >= st.session_state["min"]]
 
+    # filter by publication date
     if st.session_state.pub_date != "Anytime":
 
         use_date = datetime.datetime.now()
@@ -310,6 +326,7 @@ def get_courses():
 
         list = list[list['published_time'] > use_date1]
 
+    # filter by update date
     if st.session_state.upd_date != "Anytime":
 
         use_date = datetime.datetime.now()
@@ -326,27 +343,32 @@ def get_courses():
 
         list = list[list['last_update_date'] > use_date1]
 
+    # order by selected algorithm
     if st.session_state.order == "Subscriptions":
         list.sort_values(by='num_subscribers', inplace=True, ascending=False)
+
     elif st.session_state.order == "Rating":
         list.sort_values(by='avg_rating', inplace=True, ascending=False)
+
     elif st.session_state.order == "Publishing date":
         list.sort_values(by='published_time', inplace=True, ascending=False)
+
     elif st.session_state.order == "Suggested ✨":
         list['avg_rating_round'] = list['avg_rating'].round(decimals=0)
         list.sort_values(['avg_rating_round', 'num_comments', 'num_subscribers'],
                          ascending=[False, False, False], inplace=True)
+
+    # order with PCRA if the option is selected
     elif st.session_state.order == "PCRA":
+        # limit the ranking to the top 100 search results
         if len(list) > 100:
             list["topic"] = list["topic"].fillna("General")
             list["points"] = (list["num_subscribers"]/list.groupby("topic")[
                               "num_subscribers"].transform("sum"))*list.groupby("topic")["topic"].transform("count")
-            # print(list[["num_subscribers", "topic", "points"]].sort_values("points", ascending=False))
             list = list.sort_values("points", ascending=False).iloc[0:100]
 
-            # st.write(list)
-
         if len(list) > 0:
+            # definition of normalized the attribute metrics
             max_subs = list.num_subscribers.max()
             max_price = list.price.max()
             max_duration = list.content_length_min.max()
@@ -374,13 +396,16 @@ def get_courses():
             attributes = ["num_subscribers", "avg_rating",
                           "price", "content_length_min", "published_time"]
 
+            # weighted edge function
             def P(c1, c2, vi, attribute):
+                # increase the weight of the course rating
                 if attribute == "avg_rating":
                     w = 2
                 else:
                     w = 1
                 return 0 if vi(c1) - vi(c2) <= 0 else w
 
+            # build the graphs and directly compute the adjacency matrix
             adjacency_matrix = np.zeros([len(list), len(list)], np.int8)
             for a, attribute in enumerate(attributes):
                 for n, (i, c1) in enumerate(list.iterrows()):
@@ -388,6 +413,7 @@ def get_courses():
                         if P(c1[attribute], c2[attribute], vi[a], attribute):
                             adjacency_matrix[n, m] += 1
 
+            # compute the transition matrix
             transition_matrix = np.zeros([len(list), len(list)])
             for i, row in enumerate(adjacency_matrix):
                 for j, value in enumerate(row):
@@ -410,6 +436,7 @@ def get_courses():
     return list
 
 
+# returns the html code to represent a rating using a star system
 def draw_rating(rating):
     full_star = f"""<svg fill='{color_special}' xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="2 2 20 20">
     <path d="m7.85 19.1 1.55-5.125-4-2.9h5l1.6-5.3 1.6 5.3h5l-4 2.9 1.55 5.125L12 15.95Z"/>
@@ -435,51 +462,60 @@ def draw_rating(rating):
     svg_html = (
         svg_html
         + f"</g><span style='color:#000000;vertical-align:super;font-size:0.7em;opacity:0.75;'>("
-        + str(round(rating,2))
+        + str(round(rating, 2))
         + "/5)</span></span>"
     )
 
     return svg_html
 
 
+# returns the list of unique languages in the dataset
 def languages():
     return courses["language"].unique()
 
 
+# returns the list of unique categories in the dataset
 def categories():
     return courses["category"].unique()
 
 
+# returns the list of unique subcategories of a category in the dataset
 def subcategories():
     sub = courses[courses['category'].isin(st.session_state["category"])]
     return sub["subcategory"].unique()
 
 
+# returns the list of unique topics of a subcategory in the dataset
 def topics():
     top = courses[courses['subcategory'].isin(st.session_state["subcategory"])]
     return top["topic"].unique()
 
 
+# return the maximum course price
 def maxprice():
     return round(courses["price"].max(), 0)
 
 
+# return course record with the specified id
 def get_course_info(id):
     return courses[courses['id'] == id]
 
 
+# return the comments of the course with the specified id
 def get_course_comm(id):
     return comments[comments['course_id'] == id]
 
 
+# returns the most relevant comments along with some keywords
 def get_course_top_comm(id):
-
+    # get the dataset records
     course = get_course_info(id)
     course_comments = comments[comments['course_id'] == id]
 
     if (course_comments.size <= 5):
         return
     else:
+        # preprocess the comments to compute TF-IDF indexes
         stop_words = set(stopwords.words("english"))
         stop_words = stop_words.union(set(stopwords.words("portuguese")))
         stop_words = stop_words.union(set(stopwords.words("spanish")))
@@ -488,8 +524,8 @@ def get_course_top_comm(id):
                 set(stopwords.words(course["language"].iloc[0].lower())))
 
         lemmatizer = WordNetLemmatizer()
-        # st.write(stop_words)
 
+        # compute the term frequencies
         tf_matrix = {}
         doc_count_matrix = {}
 
@@ -512,30 +548,18 @@ def get_course_top_comm(id):
 
             tf_matrix[index] = {
                 key: value / len(word_count) for key, value in word_count.items()}
-            # st.write(word_count)
-            # st.write(len(word_count))
 
+        # compute inverse document frequencies
         idf_matrix = {key: math.log(len(course_comments) / value)
                       for key, value in doc_count_matrix.items()}
 
+        # compute TF-IDF indexes
         tf_idf_matrix = {}
         for key, comment in tf_matrix.items():
             tf_idf_matrix[key] = {word: tf * idf_matrix[word]
                                   for word, tf in comment.items()}
 
-        # col1, col2, col3 =st.columns(3)
-        # with col1:
-        #    st.header("tf matrix")
-        #    st.write(tf_matrix)
-
-        # with col2:
-        #    st.header("Idf matrix")
-        #    st.write(idf_matrix)
-
-        # with col3:
-        #    st.header("Tf-Idf matrix")
-        #    st.write(tf_idf_matrix)
-
+        # select most relevant comments using text summarization
         course_comments["score"] = None
         i = 0
         for key, comment in tf_idf_matrix.items():
@@ -545,8 +569,12 @@ def get_course_top_comm(id):
             i = i + 1
 
         df_tf_idf = pd.DataFrame(tf_idf_matrix).T.fillna(0)
-        # st.write(df_tf_idf)
 
+        threshold = 1.3*course_comments["score"].mean()
+        top_comments = course_comments[course_comments["score"] >= threshold].sort_values(
+            "score", ascending=False)
+
+        # learn topics
         pca = PCA(n_components=3, random_state=16)
 
         df_pca = pd.DataFrame(
@@ -554,8 +582,7 @@ def get_course_top_comm(id):
             columns=[f"topic_{n}" for n in range(pca.n_components_)]
         )
 
-        # st.write(df_pca)
-
+        # get belonging values of all terms for all topics
         df_weights = pd.DataFrame(
             data=pca.components_,
             columns=idf_matrix.keys(),
@@ -563,16 +590,9 @@ def get_course_top_comm(id):
         )
 
         df_weights = df_weights.T
-        # st.write(df_weights)
-        # col1, col2, col3 = st.columns(3)
-        # with col1:
-        #    st.write(df_weights.sort_values("topic_0", ascending=False))
-        # with col2:
-        #    st.write(df_weights.sort_values("topic_1", ascending=False))
-        # with col3:
-        #    st.write(df_weights.sort_values("topic_2", ascending=False))
         keywords = []
 
+        # select keywords
         n_keys = 0
         for keyword in df_weights.sort_values("topic_0", ascending=False).index:
             if n_keys < 3:
@@ -598,26 +618,24 @@ def get_course_top_comm(id):
             else:
                 break
 
-        # st.header("Top comments")
-        threshold = 1.3*course_comments["score"].mean()
-        top_comments = course_comments[course_comments["score"] >= threshold].sort_values(
-            "score", ascending=False)
-        # st.write(top_comments)
-
     return top_comments[:10], keywords
 
 
+# return the course record corresponding to the specified author
 def get_author_courses(author):
     return courses[courses['instructor_url'] == author]
 
 
+# return all the courses
 def coursesdb():
     return courses
 
 
+# return all the comments
 def commentsdb():
     return comments
 
 
-def counts():  #
+# return a list containing the number of courses, comments and authors
+def counts():
     return len(courses), len(comments), len(courses["instructor_name"].unique())

@@ -4,15 +4,17 @@ import pandas as pd
 import altair as alt
 
 
+# style the page
 be.style()
 
+# get the instructor url from the URL parameter
 instructor_url = st.experimental_get_query_params()
-# st.experimental_set_query_params()
 
 if len(instructor_url) == 0 or "u" not in instructor_url:
     st.title("Instructor summary")
     st.header("Couldn't find this instructor, maybe his profile has been deleted")
 else:
+    # show author image and information
     courses = be.get_author_courses(instructor_url["u"][0])
 
     col1, col2 = st.columns([1, 6])
@@ -27,7 +29,6 @@ else:
             <img src="{be.find_udemy_img_url(instructor_url, "author")}" alt="0" style="max-width: 100%;">
         </div>
         """, True)
-        #st.image(be.find_udemy_img_url(instructor_url, "author"))
 
     with col2:
         st.title(courses['instructor_name'].iloc[0])
@@ -48,22 +49,14 @@ else:
         st.header("Average rating")
         mean_rating = round(courses["avg_rating"].mean(), 2)
 
-        rating_html = be.draw_rating(mean_rating)#.split("<g>")
-        #rating_html = rating_html[0] + \
-        #    "<g transform='scale(0.1, 10)'>" + rating_html[1]
-
-        # st.markdown("""
-        # <style>
-        #    g {
-        #        display:block;
-        #   }
-        # </style>
-        # """, True)
+        rating_html = be.draw_rating(mean_rating)
 
         st.markdown(rating_html, True)
 
         st.write("**" + str(round(courses.num_reviews.sum())) + "** total reviews and **" +
                  str(round(courses.num_comments.sum())) + "** total comments")
+
+    # add a custom button to visit the author page on Udemy
     st.write(
         f"""
             <a href='https://www.udemy.com{instructor_url["u"][0]}'>
@@ -74,6 +67,7 @@ else:
                 </button>
             </a>""", unsafe_allow_html=True)
 
+    # create some overview plots for the ratings
     st.header("Course ratings insight")
 
     col1, col2 = st.columns([1, 2])
@@ -131,15 +125,20 @@ else:
 
         st.altair_chart(plot, use_container_width=True)
 
+    # create some plot to view the author activity
     st.header("Activity")
 
     placeholder = st.container()
-    plot_select = st.selectbox("View", options=["N° of subscribers", "Average rating"], index=0)
+    plot_select = st.selectbox(
+        "View", options=["N° of subscribers", "Average rating"], index=0)
 
     if plot_select == "N° of subscribers":
-        with placeholder: st.subheader("Publish and update course dates with number of subscribers")
+        with placeholder:
+            st.subheader(
+                "Publish and update course dates with number of subscribers")
     else:
-        with placeholder: st.subheader("Publish and update course dates with rating")
+        with placeholder:
+            st.subheader("Publish and update course dates with rating")
 
     sourcePub = pd.DataFrame({
         "Date": pd.to_datetime(courses['published_time']).dt.date,
@@ -179,6 +178,7 @@ else:
 
     st.altair_chart(line + points, use_container_width=True)
 
+    # show the courses teached by the author
     st.header("Courses from this instructor")
 
     if (courses.size == 0):
@@ -186,6 +186,7 @@ else:
     else:
         courses_num = len(courses)
 
+        # set up sub-page system
         if "author_page_num" not in st.session_state:
             st.session_state.author_page_num = 1
 
@@ -201,21 +202,23 @@ else:
                 col1, col2 = st.columns([1, 2])
                 with col1:
                     st.image(be.find_udemy_img_url(course.course_url))
+
+                # display the course information
                 with col2:
                     st.subheader(course.title)
 
+                    # add a link on the course author name to the author page
                     instructor_name = "<a href=\"/author?u=" + course.instructor_url + \
                         "\" target=\"_self\">" + course.instructor_name + "</a>"
                     st.caption("Course by " + instructor_name, True)
-                    st.caption("Published: " + str(pd.to_datetime(course['published_time']).date()) + ("" if course.last_update_date is None else ("; Last update: " + course.last_update_date)))
+
+                    st.caption("Published: " + str(pd.to_datetime(course['published_time']).date()) + (
+                        "" if course.last_update_date is None else ("; Last update: " + course.last_update_date)))
 
                     st.caption(str(round(course.num_subscribers)) +
                                " people subscribed to this course")
+
                     st.caption(be.draw_rating(course.avg_rating), True)
-
-                    # comm = "<a href=\"/course?u=" + str(round(course.id)) + "\" target=\"_self\"> comments</a>"
-
-                    # st.caption("<span>" + str(round(course.num_reviews)) + " reviews and " + str(round(course.num_comments)) + comm + "</span>", True)
 
                     st.caption("<span>" + str(round(course.num_reviews)) + " reviews and " +
                                str(round(course.num_comments)) + " comments</span>", True)
@@ -225,6 +228,7 @@ else:
                     else:
                         st.caption(":green[Free course!]")
 
+                    # represent the duration in minutes if the duration is less than 2 hours, otherwise it is converted in hours and minutes
                     if course.content_length_min >= 120:
                         st.caption("Duration: " + str(round(course.content_length_min//60)) + ":" + (str(round(course.content_length_min % 60)) if course.content_length_min %
                                    60 >= 10 else "0" + str(round(course.content_length_min % 60))) + " hours (" + str(round(course.num_lectures)) + " lectures)")
@@ -234,8 +238,7 @@ else:
 
                     st.write(course.headline)
 
-                    #st.markdown("<a href=\"/course?cid=" + str(round(course.id)
-                    #                                           ) + "\" target=\"_self\">View more</a>", True)
+                    # add a custom button to go to the course page
                     st.write(
                         f"""
                         <a href='/course?cid={str(round(course.id))}' target='_self'>
@@ -246,6 +249,7 @@ else:
                             </button>
                         </a>""", unsafe_allow_html=True)
 
+        # adds buttons for the sub-page system and styles them
         with st.container():
             st.markdown("""
                 <style>

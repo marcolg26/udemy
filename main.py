@@ -3,15 +3,14 @@ import pandas as pd
 import backend as be
 
 
+# style the page
 be.style()
 
 st.title("Welcome on Ude:violet[Me]!")
 
 st.header("What are you looking for?")
 
-queryNL = st.empty()
-st.write("You don't know what you are looking for? Check the courses summary!")
-
+# create custom widget to collect the user search preferences
 be.create_selection_expander("language", be.languages())
 
 col1, col2, col3 = st.columns(3)
@@ -48,18 +47,10 @@ with col2:
 col1, col2 = st.columns(2)
 with col1:
     st.session_state.order = st.selectbox(
-        "Order results by", ["Suggested ✨", "PCRA", "Rating", "Subscriptions", "Publishing date"])
+        "Order results by", ["Suggested ✨", "PCRA", "Rating", "Subscriptions", "Publishing date"], index=1)
 
 with col2:
     order_period = st.empty()
-
-# if "order" in st.session_state and st.session_state.order != "Subscriptions":
-    # with order_period:
-    # st.selectbox(st.session_state.order + " during", ["Today", "Last week", "Last month", "Last three months", "Last year", "Anytime"], index=5)
-
-with queryNL:
-    st.write("I'm looking for a course in " + be.list_to_string("language").lower() +
-             " about " + be.list_to_string("category").lower())
 
 if "display_search_results" not in st.session_state:
     be.set_display_search_results(False)
@@ -67,6 +58,7 @@ if "display_search_results" not in st.session_state:
 if st.button("Search!"):
     be.set_display_search_results(True)
 
+# display the search result
 if st.session_state.display_search_results:
     courses = be.get_courses()
 
@@ -79,6 +71,7 @@ if st.session_state.display_search_results:
         if "main_page_num" not in st.session_state:
             st.session_state.main_page_num = 1
 
+        # set up the sub-page system
         page_limit = 10
         if st.session_state.main_page_num*page_limit > courses_num:
             courses = courses[(st.session_state.main_page_num-1)*page_limit:]
@@ -86,26 +79,29 @@ if st.session_state.display_search_results:
             courses = courses[(st.session_state.main_page_num-1)
                               * page_limit:st.session_state.main_page_num*page_limit]
 
+        # display the list of courses
         for index, course in courses.iterrows():
             with st.container():
                 col1, col2 = st.columns([1, 2])
                 with col1:
                     st.image(be.find_udemy_img_url(course.course_url))
+
+                # display the course information
                 with col2:
                     st.subheader(course.title)
 
+                    # add a link on the course author name to the author page
                     instructor_name = "<a href=\"/author?u=" + course.instructor_url + \
                         "\" target=\"_self\">" + course.instructor_name + "</a>"
                     st.caption("Course by " + instructor_name, True)
-                    st.caption("Published: " + str(pd.to_datetime(course['published_time']).date()) + ("" if course.last_update_date is None else ("; Last update: " + course.last_update_date)))
+
+                    st.caption("Published: " + str(pd.to_datetime(course['published_time']).date()) + (
+                        "" if course.last_update_date is None else ("; Last update: " + course.last_update_date)))
 
                     st.caption(str(round(course.num_subscribers)) +
                                " people subscribed to this course")
+
                     st.caption(be.draw_rating(course.avg_rating), True)
-
-                    # comm = "<a href=\"/course?u=" + str(round(course.id)) + "\" target=\"_self\"> comments</a>"
-
-                    # st.caption("<span>" + str(round(course.num_reviews)) + " reviews and " + str(round(course.num_comments)) + comm + "</span>", True)
 
                     st.caption("<span>" + str(round(course.num_reviews)) + " reviews and " +
                                str(round(course.num_comments)) + " comments</span>", True)
@@ -115,6 +111,7 @@ if st.session_state.display_search_results:
                     else:
                         st.caption(":green[Free course!]")
 
+                    # represent the duration in minutes if the duration is less than 2 hours, otherwise it is converted in hours and minutes
                     if course.content_length_min >= 120:
                         st.caption("Duration: " + str(round(course.content_length_min//60)) + ":" + (str(round(course.content_length_min % 60)) if course.content_length_min %
                                    60 >= 10 else "0" + str(round(course.content_length_min % 60))) + " hours (" + str(round(course.num_lectures)) + " lectures)")
@@ -124,8 +121,7 @@ if st.session_state.display_search_results:
 
                     st.write(course.headline)
 
-                    #st.markdown("<a href=\"/course?cid=" + str(round(course.id)
-                    #                                           ) + "\" target=\"_self\">View more</a>", True)
+                    # add a custom button to go to the course page
                     st.write(
                         f"""
                         <a href='/course?cid={str(round(course.id))}' target='_self'>
@@ -136,6 +132,7 @@ if st.session_state.display_search_results:
                             </button>
                         </a>""", unsafe_allow_html=True)
 
+        # adds buttons for the sub-page system and styles them
         with st.container():
             st.markdown("""
                 <style>
